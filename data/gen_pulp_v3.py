@@ -6,7 +6,8 @@ Layers and target eval distribution (research/10):
   L2 structure  20%  Bender dep versions, memory-map region ownership, RTL instantiations
   L3 behavior   25%  hjson `desc` <-> register/field (4-way MC, distractors from same block)
   L4 cross-src  15%  driver C function <-> register offset macro (static analysis)
-  L5 engineering10%  GitHub issue number<->title, issue title->repo (4-way MC)
+  L5 engineering10%  GitHub issue title->repo (4-way MC; number<->title dropped: pure
+                     arbitrary-mapping recall with no engineering value)
 
 Every question is machine-checkable: kind in {hex,int,bits,word,mc}. MC options are embedded
 in the question text itself (self-contained), answer is the letter -> works unchanged for both
@@ -308,16 +309,6 @@ def l5_issues():
             repo_issues[repo] = items
             all_titles += [(repo, n, t) for n, t in items]
     repos = sorted(repo_issues)
-    # issue number -> title (MC over same repo's titles)
-    for repo, items in repo_issues.items():
-        if len(items) < 5:
-            continue
-        for n, t in items:
-            m = mc(f"In the pulp-platform/{repo} repository on GitHub, what is the title of issue #{n}?",
-                   t, [x[1] for x in items])
-            if m:
-                out.append(dict(layer="L5", type="L5_num2title", diff="hard", ip=repo, reg=str(n),
-                                kind="mc", a=m[1], q=m[0], src=f"_issues/{repo}.jsonl"))
     # title -> repo (MC over repos)
     for repo, n, t in all_titles:
         if len(t) < 25:

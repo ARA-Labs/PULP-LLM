@@ -185,3 +185,17 @@ def evaluate(model: str, tag: str, questions_b64: str = "", fewshot_b64: str = "
     vol.commit()
     print(json.dumps(summary, indent=1))
     return summary
+
+
+@app.function(image=cpu_image, volumes={VOL: vol}, secrets=[hf_secret], timeout=2 * 3600, cpu=8, memory=32 * 1024)
+def push_hf(model_dir: str = "/vol/models/dapt3", repo_id: str = "AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT"):
+    """Upload final weights from the Modal volume straight to the HF Hub."""
+    from huggingface_hub import HfApi
+    vol.reload()
+    api = HfApi(token=os.environ.get("HF_TOKEN"))
+    api.create_repo(repo_id, repo_type="model", private=False, exist_ok=True)
+    api.upload_folder(folder_path=model_dir, repo_id=repo_id, repo_type="model",
+                      ignore_patterns=["checkpoint-*", "trainer_log.jsonl", "training_args.bin",
+                                       "ds3.json", "*.png", "all_results.json", "train_results.json",
+                                       "trainer_state.json", "README.md"])
+    print("uploaded", model_dir, "->", repo_id)

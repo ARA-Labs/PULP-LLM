@@ -2,8 +2,9 @@
 
 **A 9B open model, domain-adaptively pretrained for ~$20 of GPU time, answers closed-book
 factual questions about the [PULP](https://pulp-platform.org/) Carfield/Cheshire SoC platform
-better than Claude Opus 5: 89.3% vs 69.5%** on a 131-question layered benchmark
-(and 76.9% vs 46.2% on an earlier 78-question memory-heavy benchmark).
+better than Claude Opus 5: 92.8% vs 72.0%** on a 125-question layered audit benchmark —
+and **81.6% vs 41.2%** (base model) on the full 1,776-question bank, of which only 125
+questions were ever seen during development.
 
 The headline is not the score — it is *what was required to get it*. Raw-corpus DAPT
 (the naive recipe) produced **zero** gain on memorization questions despite the training
@@ -30,9 +31,9 @@ Two questions decide whether this is feasible:
 
 As a public, license-clean proxy for a proprietary chip we use the **PULP Carfield/Cheshire**
 platform (ETH Zürich): a real, actively-developed heterogeneous RISC-V SoC whose facts are
-public *but obscure enough* that frontier models know them only partially (Opus 5: 69.5%
-closed-book on our benchmark; 46.2% on the memory-heavy one), while a base 9B model knows
-almost nothing (43.5% / 21.8% — near guess-level on memorization types).
+public *but obscure enough* that frontier models know them only partially (Opus 5: 72.0%
+closed-book on our benchmark), while a base 9B model knows almost nothing (43.2%, with
+memorization layers near guess level: 7/40 on L1 facts).
 
 Everything is **closed-book**: no retrieval, no context, 3-shot answer-format priming only.
 
@@ -42,10 +43,10 @@ Everything is **closed-book**: no retrieval, no context, 3-shot answer-format pr
 |---|---------|----------|
 | 1 | **Raw-corpus DAPT learns the distribution, not extractable facts.** 3 epochs on 31M tokens of RTL/docs/drivers: loss 0.80→0.35, register-offset accuracy **1/42 → 1/42**. A fact that appears in a single surface form (one `#define` line) is not QA-extractable — an empirical reproduction of [Physics of LM 3.1](https://arxiv.org/abs/2309.14316). | v1 ablation |
 | 2 | **Knowledge-rewriting augmentation is the enabling step, not an optimization.** Restating each fact in many surface forms makes it extractable: +aug v2 lifted the same benchmark 24.4% → 51.3%. | v2 ablation |
-| 3 | **Augmentation coverage determines the extractable scope.** A model whose augmentation covered only the 461 quizzed facts (v2) gained *only* on those layers; on uncovered layers (dependency pins 0/8, region sizes 1/8, driver↔register 4/15) it scored exactly at base level. Augment **all** facts; treat the benchmark as a sampled audit. | dapt2 on v3: 55.0% |
-| 4 | **Diversity beats repetition.** 24 LLM-written templates × 6 repeats (v3) ≫ 6 hand templates × 8 repeats (v2): offset recall 9/42 → **25/42**. Include ~1/3 *reversed* forms ("At 0x14 sits CTRL") to dodge the reversal curse, and **whole-table narrative documents** (the full register map as prose/table/header, several traversal orders) so similar facts serve as each other's context instead of interfering. | v3 vs v2 |
+| 3 | **Augmentation coverage determines the extractable scope.** A model whose augmentation covered only the 461 quizzed facts (v2) gained *only* on those layers; on uncovered layers (dependency pins 0/8, region sizes 1/8, driver↔register 4/15) it scored exactly at base level. Augment **all** facts; treat the benchmark as a sampled audit. | dapt2 on the audit set: 55.2% |
+| 4 | **Diversity beats repetition.** 24 LLM-written templates × 6 repeats (v3) ≫ 6 hand templates × 8 repeats (v2): the naive-aug model recalls 4/10 sampled register offsets, the full recipe **323/333 (97%) of all offsets**. Include ~1/3 *reversed* forms ("At 0x14 sits CTRL") to dodge the reversal curse, and **whole-table narrative documents** (the full register map as prose/table/header, several traversal orders) so similar facts serve as each other's context instead of interfering. | dapt2 vs dapt3 |
 | 5 | **Similar-fact interference, not exposure count, is the bottleneck.** At identical exposure, 9 distinctive base addresses were memorized 8/9 while 339 near-identical offsets managed 9/42. Countermeasure = distinctive context (finding 4). | v2 by-type |
-| 6 | **Auto-generated MC benchmarks leak lexically — audit your own benchmark.** Our first L3 questions were solvable by word overlap between the description and the register name (Opus scored 100% without knowledge). Fix: keep an MC question only if every distractor's lexical-overlap score ≥ the answer's (`mc_nonleaky` in `data/gen_pulp_v3.py`). One whole question type (RTL instance→module) proved unfixable and was dropped. | leaky vs fixed Opus baseline |
+| 6 | **Auto-generated benchmarks need auditing too.** (a) MC questions leak lexically: our first L3 questions were solvable by word overlap between description and register name (Opus scored 100% without knowledge) — fix: keep an MC question only if every distractor's lexical-overlap score ≥ the answer's (`mc_nonleaky`); RTL instance→module proved unfixable and was dropped. (b) Few-shot exemplars must cover every answer format — a shot set without a hex example made models answer offsets in decimal and depressed scores. (c) Issue number↔title recall turned out to be pure arbitrary-mapping memorization with no engineering value (every model ≤27%) and was removed from the bank. | leaky vs fixed baselines |
 
 ## 3. Data recipe
 
@@ -104,35 +105,42 @@ with an anti-lexical-leak constraint on every MC question (finding 6):
 | L2 structure | 20% | memory-map region ownership & sizes, dependency pins | memory maps, `Bender.yml` |
 | L3 behavior | 25% | documentation description ↔ register/field (MC) | hjson `desc` |
 | L4 cross-source | 15% | which driver function touches which register | static analysis of `sw/**/*.c` |
-| L5 engineering | 10% | issue number ↔ title, issue → repo (MC) | GitHub issues |
+| L5 engineering | 6% | issue title → repository (MC) | GitHub issues |
 
-Files: `questions_pulp_v3.jsonl` (full bank, 3,199), `eval_pulp_v3.jsonl` (stratified
-131-question audit subset used for all model comparisons), `fewshot_pulp_v3.jsonl` (3 shots),
-`score_v3.py` (scorer). Protocol: 3-shot completion, greedy, `max_tokens=24`.
+Files: `questions_pulp_v3.jsonl` (full bank, 1,776), `eval_pulp_v3.jsonl` (stratified
+125-question audit subset used for all model comparisons), `fewshot_pulp_v3.jsonl` (3 shots
+covering each answer format), `score_v3.py` (scorer). Protocol: 3-shot completion, greedy,
+`max_tokens=24`.
 
 ## 6. Results
 
-**131-question layered audit subset (closed-book):**
+**125-question layered audit subset** (closed-book; the only questions ever inspected during
+development):
 
-| Model | Total | L1 facts | L2 struct | L3 behav | L4 cross | L5 eng |
+| Model | Total | L1 facts (40) | L2 struct (26) | L3 behav (32) | L4 cross (20) | L5 eng (7) |
 |---|---|---|---|---|---|---|
-| Qwen3.5-9B-Base | 43.5% | 18% | 15% | 91% | 55% | 46% |
-| Claude Opus 5 | 69.5% | 57% | 69% | 100% | 55% | 54% |
-| **Qwen3.5-9B-PULP-DAPT (this repo)** | **89.3%** | **100%** | **73%** | **100%** | **100%** | 46% |
+| Qwen3.5-9B-Base | 43.2% | 7/40 | 4/26 | 29/32 | 11/20 | 3/7 |
+| dapt2 (naive augmentation, ablation) | 55.2% | 20/40 | 4/26 | 31/32 | 9/20 | 5/7 |
+| Claude Opus 5 | 72.0% | 23/40 | 18/26 | 32/32 | 11/20 | 6/7 |
+| **Qwen3.5-9B-PULP-DAPT (this repo)** | **92.8%** | **40/40** | **19/26** | **32/32** | **20/20** | 5/7 |
 
-**78-question memory-heavy benchmark (v2, continuity):** base 21.8% → **76.9%** (Opus 5: 46.2%).
-Register-offset questions (hardest, 42 highly-similar facts): raw DAPT 1/42 → naive aug 9/42 →
-this recipe **25/42** (Opus: 8/42).
+**Full bank — all 1,776 auto-generated questions** (1,651 of them never seen during
+development; frontier baseline omitted for cost):
 
-**Full-bank results (3,199 questions)**: see `eval/results/` (`*_fullbank.json`).
-Reported per-layer — the bank is dominated by L5 issue pairs, so the aggregate is not
-comparable to the subset number.
+| Model | Total | L1 (419) | L2 (53) | L3 (53) | L4 (25) | L5 (1,226) |
+|---|---|---|---|---|---|---|
+| Qwen3.5-9B-Base | 41.2% | 30/419 (7%) | 17/53 | 47/53 | 13/25 | 625/1226 (51%) |
+| **Qwen3.5-9B-PULP-DAPT** | **81.6%** | **406/419 (97%)** | 36/53 | **53/53** | **25/25** | 930/1226 (76%) |
+
+The full-bank run is the anti-overfitting check: L1 accuracy on the 379 never-inspected fact
+questions (97%) matches the audit subset (100%), so the subset result is not sample luck.
 
 Known limits (stated, not hidden): L3 multiple-choice is largely solvable by semantic
-name-matching for strong models (all three models >90%) — it does not differentiate;
-remaining weaknesses of the DAPT model are numeric range-membership reasoning (L2 regions
-4/10) and arbitrary-mapping recall (issue number↔title 1/6); no catastrophic-forgetting
-audit (e.g. MMLU) has been run yet.
+name-matching for strong models (all models >90%) — it does not differentiate; the DAPT
+model's remaining weakness is numeric range-membership reasoning (L2 region ownership,
+11/27 full-bank) — range queries need reasoning over the map, not fact recall; no
+catastrophic-forgetting audit (e.g. MMLU) has been run yet. Per-model result files:
+`eval/results/*_subset125.json`, `*_fullbank1776.json`.
 
 ## 7. Reproduce
 

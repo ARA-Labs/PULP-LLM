@@ -5,6 +5,7 @@ pulp/
 pulp_org/
 carfield/
 !third_party/carfield
+figures/fig_*_attempt*.png
 logs/
 *.log
 paper/*.aux

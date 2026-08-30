@@ -1,4 +1,4 @@
-# Teach an Open LLM Everything About Your Chip
+# PULP-LLM — Teach an Open Model Everything About Your Chip
 
 [![Model weights](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-open%20model%20weights-ffd21e)](https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT)
 [![Base model](https://img.shields.io/badge/base%20model-Qwen3.5--9B-4c71f0)](https://huggingface.co/Qwen/Qwen3.5-9B-Base)
@@ -16,6 +16,8 @@ The score is not the point — the *recipe* is. Continued pretraining on the raw
 injects **zero** retrievable knowledge (the loss drops; recall doesn't move). Every point of
 improvement comes from a **knowledge-rewriting augmentation** stage, and this repo is the
 full, reproducible recipe for it: corpus → augmentation → training → benchmark, end to end.
+
+![Overview: problem → training data recipe → training → closed-book exam](figures/fig_overview.png)
 
 - Model weights: **[AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT](https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT)**
 - Base model: [Qwen/Qwen3.5-9B-Base](https://huggingface.co/Qwen/Qwen3.5-9B-Base)
@@ -169,8 +171,8 @@ catastrophic-forgetting audit (e.g. MMLU) has been run yet. Per-model result fil
 ## 7. Reproduce
 
 ```bash
-git clone --recursive https://github.com/ARA-Labs/chip-knowledge-dapt
-cd chip-knowledge-dapt
+git clone --recursive https://github.com/ARA-Labs/PULP-LLM
+cd PULP-LLM
 ln -s third_party/carfield carfield   # question/augmentation generators read carfield/ at the repo root
 
 # 1) corpus (needs gh CLI for issues)

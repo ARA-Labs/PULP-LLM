@@ -63,10 +63,9 @@ driver--register links, weaker on numeric range reasoning (region ownership
 11/27). Knowledge injection buys exactly the layer that retrieval-free
 internal assistance needs and that scale alone does not provide.
 
-\paragraph{Cost.} The final pipeline costs about \$55 (template generation
-\$0.30, training \$20, evaluations $\sim$\$35 including the frontier
-baseline); the entire study with every failed branch and ablation, about
-\$330. Compute: a single 4$\times$H100 node for 77 minutes per training run.
+\paragraph{Compute.} Every training run in this study is a single
+4$\times$H100 node for 77 minutes; evaluation of the full bank is one
+GPU-hour under vLLM.
 
 \begin{figure}[t]
   \centering

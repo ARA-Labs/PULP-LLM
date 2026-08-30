@@ -1,4 +1,4 @@
-We show that a 9B open-weight model, adapted for \$20 of GPU time, answers
+We show that a 9B open-weight model, adapted in 77 minutes on four GPUs, answers
 closed-book factual questions about a real hardware platform more accurately
 than Claude Opus~5 (92.8\% vs.\ 72.0\% on a 125-question layered audit set;
 81.6\% vs.\ 72.2\% on the full 1{,}776-question bank). The setting is the one
@@ -15,6 +15,5 @@ design rules (full coverage of all facts, template diversity over repetition,
 reversed statements, whole-table narratives against similar-fact interference)
 each trace to a measured failure of a simpler variant. We also report how our
 own auto-generated benchmark misled us twice (lexically leaky multiple-choice
-questions, format-incomplete few-shot exemplars) and how we repaired it. All
-code, data pipeline, benchmark, and model weights are released; the entire
-study, including every ablation and baseline, cost about \$330.
+questions, format-incomplete few-shot exemplars) and how we repaired it. All code, the data
+pipeline, the benchmark, and the model weights are released.

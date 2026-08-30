@@ -19,8 +19,8 @@ retrieves or guesses?
 This report answers those questions with a small, fully reproducible study.
 We picked a real, actively developed but obscure hardware platform---PULP
 Carfield/Cheshire (ETH Z\"urich)---as a public stand-in for a proprietary
-chip, and asked: with an open 9B model, an open training stack, and a few
-hundred dollars, can knowledge injection be made to work \emph{and be shown to
+chip, and asked: with an open 9B model, an open training stack, and a single
+GPU node, can knowledge injection be made to work \emph{and be shown to
 work}? The headline answer is yes: our adapted model answers 92.8\% of a
 layered closed-book benchmark versus 72.0\% for Claude Opus~5, and 81.6\%
 versus 72.2\% on the full bank of 1{,}776 auto-generated questions, of which
@@ -63,7 +63,7 @@ Concretely, this report documents:
 Everything is open: the corpus pipeline, the augmentation generator, the
 benchmark and its generator, per-question results for every model, the trained
 weights, and the training configuration.\footnote{Code and benchmark:
-\url{https://github.com/ARA-Labs/chip-knowledge-dapt}. Weights:
+\url{https://github.com/ARA-Labs/PULP-LLM}. Weights:
 \url{https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT}.}
 
 \begin{figure}[t]

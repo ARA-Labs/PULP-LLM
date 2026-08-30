@@ -100,8 +100,8 @@ the augmentation's target list.
 final generator enumerates \emph{every} fact from every structured source
 ($\sim$340 register offsets, all register-description fields, both memory
 maps, build pins, driver--register links from static analysis, issue titles)
-and emits each through 24 LLM-written templates per fact type (generated for
-\$0.30 total, validated programmatically), of which at least a third are
+and emits each through 24 LLM-written templates per fact type (generated with ten LLM calls,
+validated programmatically), of which at least a third are
 \emph{reversed}---value first, entity second---to dodge the reversal
 curse~\citep{berglund2023reversal}. Two further rules come from an
 interference observation: at identical exposure, 9 mutually distinctive base
@@ -160,7 +160,7 @@ mandatory for Qwen3.5's gated-delta-net layers (25\,s/it $\rightarrow$
 7.4\,s/it); trading ZeRO-3's per-layer parameter gathering for either ZeRO-2
 or a micro-batch of 2~\citep{rajbhandari2019zero} gives an equivalent further
 2.2$\times$ (7.43 $\rightarrow$ 3.41\,s/it), making the final training run 77
-minutes on 4$\times$H100 ($\approx$\$20); and evaluation under
+minutes on 4$\times$H100; and evaluation under
 vLLM~\citep{kwon2023vllm} with prefix caching amortizes the shared few-shot
 prompt across the whole bank. Training used
 LLaMA-Factory~\citep{zheng2024llamafactory} with DeepSpeed; the allocator

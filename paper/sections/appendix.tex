@@ -1,7 +1,7 @@
 \section{Reproduction}
 \label{app:repro}
 
-The repository (\url{https://github.com/ARA-Labs/chip-knowledge-dapt})
+The repository (\url{https://github.com/ARA-Labs/PULP-LLM})
 contains the corpus crawler, fact extractors, template generator, augmentation
 builder, training/evaluation Modal app, the full benchmark with per-model
 per-question results, and the evaluated platform as a git submodule. The
@@ -12,31 +12,6 @@ $5\times10^{-6}$ cosine, global batch 16, packing at 4096, bf16, 2 epochs,
 ZeRO-3 with micro-batch 2, 4$\times$H100, 77 min); evaluate with vLLM (3-shot
 completion, greedy, 24 max tokens, prefix caching). Model weights:
 \url{https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT}.
-
-\section{Cost Accounting}
-\label{app:cost}
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lr}
-\toprule
-Item & Cost \\
-\midrule
-Corpus crawl \& filtering & \$0 (CPU) \\
-Template generation (10 LLM calls) & \$0.30 \\
-Final training run (4$\times$H100, 77 min) & $\sim$\$20 \\
-Model evaluations (vLLM, 6 runs) & $\sim$\$10 \\
-Frontier baselines (audit set + full bank) & $\sim$\$25 \\
-Configuration smoke tests & $\sim$\$5 \\
-\midrule
-Final pipeline total & $\sim$\$60 \\
-Failed branches, pilots, ablations (whole study) & $\sim$\$270 \\
-\midrule
-Whole study & $\sim$\$330 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \section{Engineering Notes}
 \label{app:eng}

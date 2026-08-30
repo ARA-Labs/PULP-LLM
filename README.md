@@ -2,8 +2,8 @@
 
 **A 9B open model, domain-adaptively pretrained for ~$20 of GPU time, answers closed-book
 factual questions about the [PULP](https://pulp-platform.org/) Carfield/Cheshire SoC platform
-better than Claude Opus 5: 92.8% vs 72.0%** on a 125-question layered audit benchmark —
-and **81.6% vs 41.2%** (base model) on the full 1,776-question bank, of which only 125
+better than Claude Opus 5: 92.8% vs 72.0%** on a 125-question layered audit benchmark, and
+**81.6% vs 72.2%** on the full 1,776-question bank (base model: 41.2%), of which only 125
 questions were ever seen during development.
 
 The headline is not the score — it is *what was required to get it*. Raw-corpus DAPT
@@ -125,12 +125,18 @@ development):
 | **Qwen3.5-9B-PULP-DAPT (this repo)** | **92.8%** | **40/40** | **19/26** | **32/32** | **20/20** | 5/7 |
 
 **Full bank — all 1,776 auto-generated questions** (1,651 of them never seen during
-development; frontier baseline omitted for cost):
+development):
 
 | Model | Total | L1 (419) | L2 (53) | L3 (53) | L4 (25) | L5 (1,226) |
 |---|---|---|---|---|---|---|
 | Qwen3.5-9B-Base | 41.2% | 30/419 (7%) | 17/53 | 47/53 | 13/25 | 625/1226 (51%) |
+| Claude Opus 5 | 72.2% | 116/419 (28%) | 42/53 | 52/53 | 13/25 | 1060/1226 (86%) |
 | **Qwen3.5-9B-PULP-DAPT** | **81.6%** | **406/419 (97%)** | 36/53 | **53/53** | **25/25** | 930/1226 (76%) |
+
+The layer profiles are complementary: Opus wins where semantic association helps (issue→repo
+86%, region ownership 26/27) but collapses on pure memorization (register offsets 18%); the
+DAPT model is the mirror image — which is exactly the knowledge a RAG-free internal assistant
+needs to have in weights.
 
 The full-bank run is the anti-overfitting check: L1 accuracy on the 379 never-inspected fact
 questions (97%) matches the audit subset (100%), so the subset result is not sample luck.

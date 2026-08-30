@@ -53,12 +53,13 @@ fact questions the model scores 97\%, matching its 100\% on the inspected 40.
 The subset number is not sample luck, and the augmentation's full-coverage
 property is real.
 
-\paragraph{Complementary failure profiles.} Figure~\ref{fig:layers} shows why
-``beats Opus'' is the right summary but not the interesting one. The frontier
+\paragraph{Complementary failure profiles.} The layer columns of
+Table~\ref{tab:fullbank} show why ``beats Opus'' is the right summary but not
+the interesting one. The frontier
 model wins wherever semantic association helps: issue-title$\rightarrow$
 repository attribution (86\%), memory-region ownership (26/27), documentation
 semantics (98\%). It collapses on pure memorization: 18\% on register offsets.
-The adapted 9B is the mirror image---97\% on offsets, 100\% on
+The adapted 9B is the mirror image: 97\% on offsets, 100\% on
 driver--register links, weaker on numeric range reasoning (region ownership
 11/27). Knowledge injection buys exactly the layer that retrieval-free
 internal assistance needs and that scale alone does not provide.
@@ -67,14 +68,3 @@ internal assistance needs and that scale alone does not provide.
 4$\times$H100 node for 77 minutes; evaluation of the full bank is one
 GPU-hour under vLLM.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig2_layers.pdf}
-  \caption{\textbf{Layer profiles on the full 1{,}776-question bank.} The
-  frontier model and the adapted 9B fail in opposite places: Opus~5 wins on
-  association-friendly layers (L3, L5) but scores 28\% on L1 facts; the
-  DAPT model holds 97--100\% on facts and cross-source links. L2 mixes
-  memorizable items (sizes, pins) with numeric range reasoning, where the
-  adapted model remains weak.}
-  \label{fig:layers}
-\end{figure}

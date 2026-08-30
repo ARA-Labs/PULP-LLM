@@ -18,101 +18,114 @@ OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
 client = genai.Client(api_key=API_KEY)
 
 PROMPT = """
-Create an ultra-clean, modern technical overview diagram for a machine-learning
-research README. Confident, spacious, authoritative — think Apple developer
-documentation meets a Nature paper. It shows an end-to-end pipeline: teaching a
-small open language model everything about one chip platform, then examining it
-closed-book. Wide banner format, 16:9.
+Create a richly illustrated technical overview diagram for a machine-learning
+research README. Each component has a small, meaningful line-art icon so the
+figure is self-explanatory — a reader should grasp the whole story just by
+looking: we take one chip platform's knowledge, rewrite it into training data,
+train a small open model on it, and then examine that model closed-book, where
+it beats a frontier model. Think: the best technical documentation you've ever
+seen. Wide banner format, 16:9.
 
-VISUAL STYLE — MODERN MINIMAL:
-- Ultra-clean geometric shapes with crisp edges
-- Four vertical section columns side by side, each a full-height rounded
-  rectangle (12px corners) with a desaturated tinted fill
-- Component boxes inside sections: white fill, 10px rounded corners, NO visible
-  border — they float on the tinted section background with a subtle shadow
-  (1px offset, 4px blur, rgba(0,0,0,0.06))
-- ONE accent color per section, used only on the section header text and one
-  key element in that section
-- Arrows between sections: thin 1.5px, dark gray #6B7280, small filled circle
-  at the source, clean open chevron at the target, with a small italic label
-- Typography: Inter / system sans-serif, section headers in SMALL CAPS with
-  letter-spacing, titles 600 weight, body 400 weight
-- Labels INSIDE boxes, generous whitespace, at least 24px between elements
-- NO decorative icons, NO illustrations — structure and typography only
+VISUAL STYLE — ILLUSTRATED TECHNICAL:
+- Every major component box contains a small MEANINGFUL ICON drawn in a
+  consistent line-art style: single color, 2px stroke, rounded caps, roughly
+  28x28px, minimal and geometric — like a premium icon set (Lucide/Feather
+  quality). Icons sit top-left or left of the box title.
+- Component boxes: white fill, soft rounded rectangles (10px corners), a
+  LEFT COLOR STRIP (4px wide) in the section accent color, subtle shadow
+  (1px offset, 4px blur, rgba(0,0,0,0.06)), no other border
+- Four logical groups arranged as vertical columns, each with a very faint
+  tinted background region behind its boxes
+- Section headers ABOVE each column in SMALL CAPS, letter-spaced, in the
+  section accent color
+- Connections BETWEEN columns use gently CURVED bezier paths colored by their
+  SOURCE section accent, medium 2.5px weight, small open arrowhead, with a
+  small italic label riding the curve
+- Typography: Inter / system sans-serif, titles 600 weight, body 400 weight
+- Generous whitespace; nothing cramped
 
 COLOR PALETTE — NORD (use EXACTLY these colors):
 - Main text: #2E3440
 - Secondary text: #4C566A
-- Section 1 fill: #EEF1F6 (blue tint), accent #5E81AC
-- Section 2 fill: #EDF3ED (green tint), accent #4E7A4E
-- Section 3 fill: #F5F2EA (sand tint), accent #B08C3E
-- Section 4 fill: #F6EDEE (rose tint), accent #BF616A
+- Column 1 (problem): faint region #EEF1F6, accent #5E81AC — icons in this
+  column drawn in #5E81AC
+- Column 2 (data): faint region #EDF3ED, accent #4E7A4E — icons in #4E7A4E
+- Column 3 (training): faint region #F5F2EA, accent #B08C3E — icons in #B08C3E
+- Column 4 (exam): faint region #F6EDEE, accent #BF616A — icons in #BF616A
 - Component boxes: white #FFFFFF
-- Arrows: #6B7280
 - Page background: pure white #FFFFFF
 
 LAYOUT — FOUR VERTICAL COLUMNS, LEFT TO RIGHT, EQUAL WIDTH:
 
-COLUMN 1 — header "THE PROBLEM" in #5E81AC small caps, blue-tint section #EEF1F6:
-- White box 1: title "Your chip's knowledge", subtitle "register maps - memory
-  maps - drivers - build system - issue history"
-- White box 2: title "In no pretraining corpus", subtitle "frontier LLMs know it
-  only partially; a base 9B model barely at all"
-- White box 3 (key element, thin #5E81AC left strip): title "Test bed: PULP
-  Carfield SoC", subtitle "a real open RISC-V platform, 259 public repos"
+COLUMN 1 — header "THE PROBLEM" in #5E81AC:
+- Box 1: icon = a MICROCHIP (square with pins on all four sides, small square
+  core inside). Title "Your chip's knowledge", subtitle "register maps - memory
+  maps - drivers - build system - issue history". Around the chip icon, three
+  tiny satellite glyphs: a small table grid, a wrench, a speech-bubble with "!"
+- Box 2: icon = an OPEN BOOK with a question mark hovering over it.
+  Title "In no pretraining corpus", subtitle "frontier LLMs know it only
+  partially; a base 9B model barely at all"
+- Box 3: icon = a CIRCUIT BOARD (rectangle with traced lines and via dots).
+  Title "Test bed: PULP Carfield SoC", subtitle "a real open RISC-V platform,
+  259 public repos"
 
-COLUMN 2 — header "TRAINING DATA RECIPE" in #4E7A4E small caps, green-tint
-section #EDF3ED:
-- White box 1: title "Corpus - 31.2M tokens", subtitle "RTL - register hjson -
-  C drivers - docs - issues"
-- White box 2 (key element, thin #4E7A4E left strip, slightly taller): title
-  "Knowledge-rewriting augmentation - 3.5M tokens", subtitle "every fact x 24
-  paraphrase templates - 1/3 reversed forms - whole-table narrative docs"
-- Small italic footnote text at the bottom of the section, in #4C566A:
+COLUMN 2 — header "TRAINING DATA RECIPE" in #4E7A4E:
+- Box 1: icon = a STACK OF DOCUMENTS with code brackets < > on the front page.
+  Title "Corpus - 31.2M tokens", subtitle "RTL - register hjson - C drivers -
+  docs - issues"
+- Box 2 (taller, the hero of this column): icon = a FOUNTAIN PEN NIB with a
+  small spark. Title "Knowledge-rewriting augmentation - 3.5M tokens".
+  Inside this box, a mini-illustration: one small monospace source line
+  "0xa8" in a tiny chip-labeled tag on the left, fanning out with three thin
+  #4E7A4E lines to three tiny cards on the right labeled "datasheet prose",
+  "table row", "quiz Q/A" — showing one fact rewritten into many forms.
+  Below the mini-illustration, one subtitle line: "every fact x 24 templates -
+  1/3 reversed - whole-table docs"
+- Small italic footnote at the bottom of the column in #4C566A:
   "raw corpus alone injects zero retrievable facts"
 
-COLUMN 3 — header "TRAINING" in #B08C3E small caps, sand-tint section #F5F2EA:
-- White box 1: title "Qwen3.5-9B-Base", subtitle "open weights"
-- Downward thin gray arrow to:
-- White box 2: title "Continued pretraining", subtitle "full-parameter - 77 min
-  on 4x H100"
-- Downward thin gray arrow to:
-- White box 3 (key element, thin #B08C3E left strip): title
-  "Qwen3.5-9B-PULP", subtitle "the chip expert"
+COLUMN 3 — header "TRAINING" in #B08C3E:
+- Box 1: icon = a NEURAL NETWORK (three columns of small circles connected by
+  lines). Title "Qwen3.5-9B-Base", subtitle "open weights, 9B parameters"
+- Curved #B08C3E arrow DOWN to:
+- Box 2: icon = a GPU CARD (rectangle with a fan circle and slot pins) with a
+  small "x4" beside it, plus a tiny clock glyph. Title "Continued pretraining",
+  subtitle "full-parameter - 77 min on 4x H100"
+- Curved #B08C3E arrow DOWN to:
+- Box 3: icon = the SAME neural network but wearing a tiny GRADUATION CAP.
+  Title "Qwen3.5-9B-PULP", subtitle "the chip expert"
 
-COLUMN 4 — header "CLOSED-BOOK EXAM" in #BF616A small caps, rose-tint section
-#F6EDEE:
-- White box 1: title "1,776 auto-generated questions", subtitle "machine-checked,
-  no retrieval, no context"
-- White box 2, styled like a small exam card with a monospace feel: first line
-  "Q: byte offset of the SECURITY_ISLAND_RST register in the carfield block?"
-  second line "A: 0x2c" with "0x2c" in bold #BF616A
-- White box 3 (key element, thin #BF616A left strip), a compact scoreboard of
-  three rows, right-aligned numbers in 600 weight:
-  row 1: "Qwen3.5-9B-PULP (ours)   81.6%" — this row's number in #BF616A
+COLUMN 4 — header "CLOSED-BOOK EXAM" in #BF616A:
+- Box 1: icon = a CLOSED BOOK with a small padlock. Title "1,776 auto-generated
+  questions", subtitle "machine-checked - no retrieval, no context"
+- Box 2: styled as an EXAM CARD — slightly warmer paper-white fill, a corner
+  fold at top-right, monospace text:
+  line 1: "Q: byte offset of the SECURITY_ISLAND_RST register?"
+  line 2: "A: 0x2c" with "0x2c" bold in #BF616A, next to a hand-drawn-style
+  check mark
+- Box 3: a PODIUM-style scoreboard. Icon = a small TROPHY at the top-left.
+  Three rows, right-aligned bold numbers:
+  row 1: "Qwen3.5-9B-PULP (ours)   81.6%" — number in #BF616A, tiny "1st" medal
   row 2: "Claude Opus 5   72.2%"
   row 3: "Qwen3.5-9B-Base   41.2%"
-  and below the rows, one small #4C566A line: "register offsets: 97% vs 28% vs 7%"
+  Below the rows one small #4C566A line: "register offsets: 97% vs 28% vs 7%"
 
-CONNECTIONS:
-ARROW 1: from COLUMN 1 right edge to COLUMN 2 left edge, vertically centered.
-- thin 1.5px, #6B7280, straight, filled dot at source, open chevron at target
-- label above it in small italic #4C566A: "crawl + extract every fact"
-ARROW 2: from COLUMN 2 right edge to COLUMN 3 left edge, vertically centered.
-- same style, label: "corpus : augmentation : replay mix"
-ARROW 3: from COLUMN 3 right edge to COLUMN 4 left edge, vertically centered.
-- same style, label: "3-shot, greedy"
+CONNECTIONS (between columns, vertically centered, curved bezier):
+ARROW 1: Column 1 → Column 2, color #5E81AC, italic label "crawl + extract
+  every fact"
+ARROW 2: Column 2 → Column 3, color #4E7A4E, italic label "corpus + augmentation
+  + replay"
+ARROW 3: Column 3 → Column 4, color #B08C3E, italic label "3-shot, greedy"
 
 CONSTRAINTS:
-- ZERO decoration — no icons, no illustrations, no ornaments, no logos
-- NO visible borders on white boxes — subtle shadow only (left color strips on
-  the three key boxes are the single exception)
-- NO gradients, NO patterns, NO textures
+- Icons are simple LINE DRAWINGS, single accent color, consistent 2px stroke —
+  NO emoji, NO clip art, NO 3D, NO photorealism, NO gradients
+- All icons share one visual language; none more detailed than the others
 - NO figure number, NO caption, NO watermark, NO title above the diagram
 - Background pure white #FFFFFF
 - Every text label spelled EXACTLY as written above; SPELL EXACTLY:
-  "SECURITY_ISLAND_RST", "0x2c", "Qwen3.5-9B-PULP", "Carfield", "81.6%",
-  "72.2%", "41.2%", "31.2M", "3.5M", "1,776"
+  "SECURITY_ISLAND_RST", "0x2c", "Qwen3.5-9B-PULP", "Qwen3.5-9B-Base",
+  "Carfield", "81.6%", "72.2%", "41.2%", "31.2M", "3.5M", "1,776", "0xa8"
 - Whitespace is a design element; nothing cramped
 """
 

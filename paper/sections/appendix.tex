@@ -18,13 +18,13 @@ completion, greedy, 24 max tokens, prefix caching). Model weights:
 
 Notes that cost us time and are cheap to pass on: (i)~Qwen3.5's gated-delta-net
 layers train 3.4$\times$ slower without the \texttt{flash-linear-attention}
-package---the fallback path emits no warning; (ii)~ZeRO-2 and ZeRO-3 with
+package (the fallback path emits no warning); (ii)~ZeRO-2 and ZeRO-3 with
 micro-batch 2 are throughput-equivalent here (3.47 vs.\ 3.41\,s/it), so pick
 by memory headroom; (iii)~\texttt{PYTORCH\_CUDA\_ALLOC\_CONF=expandable\_segments:true}
 silences per-step allocator retry warnings on tight configurations;
 (iv)~organizational corpora hide enormous toolchain forks (ours: 168M
-characters of binutils/glibc forks, 5$\times$ the real content)---filter by
+characters of binutils/glibc forks, 5$\times$ the real content); filter by
 repository identity before tokenizing; (v)~few-shot exemplars must cover every
 answer format in the bank (\S\ref{sec:d5}); (vi)~keep per-question model
-outputs forever---every re-scoring in this study (question deletions, protocol
+outputs forever: every re-scoring in this study (question deletions, protocol
 audits) was free because raw outputs were retained.

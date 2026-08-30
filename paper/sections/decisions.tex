@@ -4,7 +4,7 @@
 Each subsection follows the same shape: the options on the table, the choice,
 and the measurement that forced it.
 
-\subsection{D1: The testbed --- why not a popular open-source chip}
+\subsection{D1: The testbed. Why not a popular open-source chip}
 \label{sec:d1}
 
 \textbf{Options.} (a)~Use OpenTitan, the best-documented open SoC, as-is;
@@ -17,20 +17,20 @@ and kept as a companion methodology.
 
 \textbf{Why.} A knowledge-injection demo is meaningless if the model already
 knows the answers. We probed Claude Opus~5 closed-book on 252 auto-generated
-OpenTitan questions: 75.0\% correct, including exact register offsets---the
+OpenTitan questions: 75.0\% correct, including exact register offsets. The
 chip is \emph{in the weights}, so option~(a) cannot attribute anything to
 training. The Cisco-X transform (identifier renaming through the register-tool
 regeneration flow, constant perturbation, layout shuffling) drives frontier
 closed-book performance to 0.0\% with 99.6\% explicit abstention while
-open-book performance stays at 91.8\%---clean attribution, and a reusable
+open-book performance stays at 91.8\%: clean attribution, and a reusable
 trick for customer engagements where even question texts are sensitive. But a
 synthetic chip cannot demonstrate handling of \emph{real} corpus mess:
 Carfield is actively developed, sparsely discussed on the public web
 (Opus~5: 72.0\% on our final benchmark, with register offsets at 18\%), and
-comes with the full organic sprawl---259 repositories, generated headers,
-issues, drivers---that a customer's internal data will have.
+comes with the full organic sprawl (259 repositories, generated headers,
+issues, drivers) that a customer's internal data will have.
 
-\subsection{D2: Adaptation method --- DAPT before SFT, weights before retrieval}
+\subsection{D2: Adaptation method. DAPT before SFT, weights before retrieval}
 \label{sec:d2}
 
 \textbf{Options.} (a)~Retrieval over the corpus with a strong general model;
@@ -43,7 +43,7 @@ weights.
 \textbf{Why.} The property under test is closed-book knowledge
 (\S\ref{sec:problem}); retrieval by construction does not put knowledge in
 weights, so (a) answers a different question. SFT-first (b) teaches answer
-\emph{format} but must invent its Q/A pairs from the same corpus---and our
+\emph{format} but must invent its Q/A pairs from the same corpus, and our
 corpus is 31.2M tokens of mostly non-Q/A material; at that scale the
 ChipNeMo-style recipe~\citep{liu2023chipnemo} (full-parameter continued
 pretraining at low learning rate with a general-data replay mix) is the
@@ -52,7 +52,7 @@ continued pretraining is worthwhile. The 3-shot completion protocol
 substitutes for instruction-following during evaluation, letting us measure
 injected knowledge without an SFT stage confounding it.
 
-\subsection{D3: Base model --- a base checkpoint, not a chat model}
+\subsection{D3: Base model. A base checkpoint, not a chat model}
 \label{sec:d3}
 
 \textbf{Options.} (a)~Instruction-tuned 7--9B checkpoints; (b)~base
@@ -61,22 +61,22 @@ checkpoints.
 \textbf{Choice.} Qwen3.5-9B-\emph{Base}, full-parameter, LR $5\times10^{-6}$
 cosine, packing at 4096, two epochs.
 
-\textbf{Why.} ChipNeMo's ablations are unambiguous---DAPT on a chat model
-degrades both knowledge uptake and chat ability; low learning rate and
-full-parameter updates (not LoRA) are what make fact absorption work---and we
+\textbf{Why.} ChipNeMo's ablations are unambiguous: DAPT on a chat model
+degrades both knowledge uptake and chat ability, and low learning rate with
+full-parameter updates (not LoRA) is what makes fact absorption work. We
 saw no reason to relitigate them on our budget. We took the newest open base
 model at the largest size our 4-GPU budget trains in about an hour.
 
-\subsection{D4: The data recipe --- where the result actually comes from}
+\subsection{D4: The data recipe. Where the result actually comes from}
 \label{sec:d4}
 
 This is the decision that produced the paper's central lesson, in three
 measured steps.
 
-\textbf{Step 1: raw corpus fails.} The obvious recipe---feed the filtered
+\textbf{Step 1: raw corpus fails.} The obvious recipe, feeding the filtered
 31.2M-token organizational corpus (RTL, generated headers, docs, drivers,
 issues of all 259 non-fork repositories, plus 8\% general-text replay) to the
-trainer---\emph{looks} like it works: training loss falls from 0.80 to 0.35.
+trainer, \emph{looks} like it works: training loss falls from 0.80 to 0.35.
 It injects nothing extractable: on the pilot benchmark's 42 register-offset
 questions the raw-DAPT model scores 1/42, identical to base. A fact that
 appears in exactly one surface form (a \texttt{\#define} line) is stored but
@@ -84,11 +84,11 @@ not retrievable as an answer, exactly as \citet{allenzhu2023physics31} predict
 with synthetic biographies; we believe this is the clearest industrial-corpus
 confirmation of that result to date, and it means the popular mental model
 ``CPT on your data $\Rightarrow$ your model knows your data'' fails
-\emph{silently}---loss curves report success while extraction stays at zero.
+\emph{silently}: loss curves report success while extraction stays at zero.
 
 \textbf{Step 2: augmentation works exactly as far as it covers.} We then
 restated facts in multiple declarative paraphrases mixed into the corpus. The
-first version covered only the 461 facts our pilot questions quizzed---and its
+first version covered only the 461 facts our pilot questions quizzed, and its
 gains land \emph{only} on layers those facts populate. On the final benchmark,
 that model (55.2\%) matches the untrained base \emph{exactly} on everything
 its augmentation never covered: dependency pins 0/8, region sizes 1/8,
@@ -102,7 +102,7 @@ final generator enumerates \emph{every} fact from every structured source
 maps, build pins, driver--register links from static analysis, issue titles)
 and emits each through 24 LLM-written templates per fact type (generated with ten LLM calls,
 validated programmatically), of which at least a third are
-\emph{reversed}---value first, entity second---to dodge the reversal
+\emph{reversed} (value first, entity second) to dodge the reversal
 curse~\citep{berglund2023reversal}. Two further rules come from an
 interference observation: at identical exposure, 9 mutually distinctive base
 addresses were memorized 8/9 while 339 near-identical offsets managed 9/42.
@@ -112,10 +112,10 @@ a markdown table, a C header, and a neighbor-chain walk, so that similar facts
 appear as each other's context) and fewer repeats (6 rather than 8) in favor
 of more forms. The augmentation totals 3.49M tokens, about 10\% of the
 training mix. Result: register-offset recall went from 1/42 (raw) and 9/42
-(quizzed-facts augmentation) to 25/42 on the pilot protocol---and 97\%
+(quizzed-facts augmentation) to 25/42 on the pilot protocol, and to 97\%
 (323/333) over \emph{all} offsets under the final protocol.
 
-\subsection{D5: Evaluation --- auditing our own benchmark}
+\subsection{D5: Evaluation. Auditing our own benchmark}
 \label{sec:d5}
 
 \textbf{Options.} (a)~Quiz whatever is easy to auto-generate; (b)~design the
@@ -125,14 +125,14 @@ generator itself as a system under test.
 \textbf{Choice.} (b), after (a) burned us.
 
 \textbf{Why.} Our pilot benchmark drew 54\% of its questions from register
-offsets---not because offsets matter most, but because a regex over generated
+offsets, not because offsets matter most, but because a regex over generated
 headers made them free. Auto-generated evaluations inherit the streetlight
 effect of their sources, and training data designed against such an
 evaluation inherits it twice. The final benchmark is layered by knowledge
-kind: L1 facts (30\%), L2 structure---memory-map ownership, sizes, dependency
-pins (20\%), L3 behavior---documentation semantics as 4-way multiple choice
-(25\%), L4 cross-source---which driver function touches which register, from
-static analysis (15\%), L5 engineering history (10\%); every question is
+kind: L1 facts, 30\%; L2 structure (memory-map ownership, sizes, dependency
+pins), 20\%; L3 behavior (documentation semantics as 4-way multiple choice),
+25\%; L4 cross-source (which driver function touches which register, from
+static analysis), 15\%; L5 engineering history, 10\%. Every question is
 machine-checkable.
 
 Three generator defects surfaced only because we ran a frontier model as an
@@ -144,14 +144,14 @@ multiple-choice question only if every distractor's lexical-overlap score is
 at least the answer's, and we deleted one question type (RTL
 instance$\rightarrow$module) that could not be repaired. \emph{Few-shot
 format holes:} a shot set whose three exemplars were all bit-range answers
-caused models to answer hex questions in decimal---mis-scored by the
-normalizer \emph{and} genuinely degraded---silently depressing an entire
+caused models to answer hex questions in decimal, mis-scored by the
+normalizer \emph{and} genuinely degraded, silently depressing an entire
 protocol; every answer format now has an exemplar. \emph{Worthless question
 types:} issue-number$\rightarrow$title recall is a pure arbitrary mapping
 with no engineering value; no model exceeded 27\%, and we removed the type
 (1{,}423 questions) from the bank rather than let it dominate the aggregate.
 
-\subsection{D6: Systems configuration --- the cheap 2.2$\times$}
+\subsection{D6: Systems configuration. The cheap 2.2$\times$}
 \label{sec:d6}
 
 Three configuration-level choices, found by 15-step smoke tests, cut cost

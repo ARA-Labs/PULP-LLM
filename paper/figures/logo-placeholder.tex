@@ -1,0 +1,16 @@
+% Neutral placeholder logo for the paperkit template.
+% Rebuild with:  pdflatex logo-placeholder.tex
+% Replace figures/logo-placeholder.pdf with your own lab or company mark.
+\documentclass[border=0pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\definecolor{logoink}{HTML}{2F5D8C}
+\definecolor{logoaccent}{HTML}{7FA8D4}
+\begin{document}
+\begin{tikzpicture}[x=1pt,y=1pt]
+  \fill[logoink, rounded corners=8pt] (0,0) rectangle (48,48);
+  \fill[white] (11,32) rectangle (37,36);
+  \fill[white] (11,22) rectangle (30,26);
+  \fill[logoaccent] (11,12) rectangle (23,16);
+\end{tikzpicture}
+\end{document}

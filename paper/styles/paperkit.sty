@@ -1,0 +1,764 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% paperkit.sty -- one preamble for ML paper submissions.
+%%
+%% Bundles the packages, macros, and first-page layout that every ML paper
+%% needs, and switches venue style with a single option:
+%%
+%%   \usepackage[arxiv]{styles/paperkit}    % preprint, two-column (ICML style)
+%%   \usepackage[arxiv1col]{styles/paperkit}% preprint, one-column (acmsmall look)
+%%   \usepackage[neurips]{styles/paperkit}  % NeurIPS 2026 submission
+%%   \usepackage[icml]{styles/paperkit}     % ICML 2026 submission
+%%   \usepackage[plain]{styles/paperkit}    % plain article, no venue style
+%%
+%% Options
+%%   arxiv | arxiv1col | icml | neurips | neurips2025 | plain
+%%                  venue (default: arxiv)
+%%   final          camera-ready / de-anonymized
+%%   nonatbib      do not load natbib (for BibLaTeX documents)
+%%   panel          force the rounded title+abstract panel on
+%%   nopanel        force it off (use the venue's native \maketitle)
+%%   colorlinks     colored hyperlinks instead of boxed ones
+%%   notheorems     do not define theorem environments
+%%   minimal        skip the heavy optional packages (tikz, listings, pifont)
+%%   nolibertine    arxiv1col only: keep the default fonts instead of Libertine
+%%   acmtrim        arxiv1col only: acmsmall's own 6.75x10in page, 10pt body,
+%%                  instead of Letter with the same margin proportions
+%%   noheader       arxiv1col only: drop the branded running head and foot and
+%%                  fall back to the article default page number
+%%
+%% The venue can also be set from the command line without editing main.tex:
+%%   pdflatex "\def\pkvenue{neurips}\input{main.tex}"
+%%
+%% If your venue .sty files live somewhere other than styles/, set
+%%   \def\pkstyledir{mydir/}
+%% BEFORE loading paperkit.
+%%
+%% Author: paperkit contributors. Public domain / CC0 -- copy it anywhere.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{paperkit}[2026/08/05 v1.1 Unified ML paper style kit]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% options %%
+\def\pk@venue{arxiv}
+\newif\ifpk@final      \pk@finalfalse
+\newif\ifpk@preprint   \pk@preprintfalse
+\newif\ifpk@panelset   \pk@panelsetfalse
+\newif\ifpk@panel      \pk@panelfalse
+\newif\ifpk@minimal    \pk@minimalfalse
+\newif\ifpk@theorems   \pk@theoremstrue
+\newif\ifpk@colorlinks \pk@colorlinksfalse
+\newif\ifpk@natbib     \pk@natbibtrue
+\newif\ifpk@libertine  \pk@libertinetrue
+\newif\ifpk@acmtrim    \pk@acmtrimfalse
+\newif\ifpk@header     \pk@headertrue
+
+\DeclareOption{arxiv}{\def\pk@venue{arxiv}}
+\DeclareOption{arxiv1col}{\def\pk@venue{arxiv1col}}
+\DeclareOption{icml}{\def\pk@venue{icml}}
+\DeclareOption{neurips}{\def\pk@venue{neurips}}
+\DeclareOption{neurips2025}{\def\pk@venue{neurips2025}}
+\DeclareOption{plain}{\def\pk@venue{plain}}
+\DeclareOption{final}{\pk@finaltrue}
+\DeclareOption{preprint}{\pk@preprinttrue}
+\DeclareOption{panel}{\pk@panelsettrue\pk@paneltrue}
+\DeclareOption{nopanel}{\pk@panelsettrue\pk@panelfalse}
+\DeclareOption{minimal}{\pk@minimaltrue}
+\DeclareOption{notheorems}{\pk@theoremsfalse}
+\DeclareOption{colorlinks}{\pk@colorlinkstrue}
+\DeclareOption{nonatbib}{\pk@natbibfalse}
+\DeclareOption{nolibertine}{\pk@libertinefalse}
+\DeclareOption{acmtrim}{\pk@acmtrimtrue}
+\DeclareOption{noheader}{\pk@headerfalse}
+\DeclareOption*{\PackageWarning{paperkit}{Unknown option `\CurrentOption'}}
+\ProcessOptions\relax
+
+% \def\pkvenue{...} on the command line wins over the package option.
+\@ifundefined{pkvenue}{}{\edef\pk@venue{\pkvenue}}
+
+\newif\ifpk@arxiv    \newif\ifpk@icml    \newif\ifpk@onecol
+\newif\ifpk@neurips  \newif\ifpk@nrold  \newif\ifpk@plainvenue
+\def\pk@tmp{arxiv}\ifx\pk@venue\pk@tmp\pk@arxivtrue\fi
+\def\pk@tmp{arxiv1col}\ifx\pk@venue\pk@tmp\pk@onecoltrue\fi
+\def\pk@tmp{icml}\ifx\pk@venue\pk@tmp\pk@icmltrue\fi
+\def\pk@tmp{neurips}\ifx\pk@venue\pk@tmp\pk@neuripstrue\fi
+\def\pk@tmp{neurips2025}\ifx\pk@venue\pk@tmp\pk@neuripstrue\pk@nroldtrue\fi
+\def\pk@tmp{plain}\ifx\pk@venue\pk@tmp\pk@plainvenuetrue\fi
+\ifpk@arxiv\else\ifpk@onecol\else\ifpk@icml\else\ifpk@neurips\else\ifpk@plainvenue\else
+  \PackageError{paperkit}{Unknown venue `\pk@venue'}%
+    {Use one of: arxiv, arxiv1col, icml, neurips, neurips2025, plain.}%
+\fi\fi\fi\fi\fi
+
+% Blind venues: paperkit-rendered headers (panel, ICML box) must hide authors
+% unless `final' is given. The NeurIPS style anonymizes its native block itself.
+\newif\ifpk@anon \pk@anonfalse
+\ifpk@final\else\ifpk@preprint\else
+  \ifpk@icml\pk@anontrue\fi
+  \ifpk@neurips\pk@anontrue\fi
+\fi\fi
+
+% Panel is the default look for preprints only; venues get their native block.
+\ifpk@panelset\else
+  \pk@panelfalse
+  \ifpk@arxiv\pk@paneltrue\fi
+  \ifpk@onecol\pk@paneltrue\fi
+\fi
+
+\providecommand{\pkstyledir}{styles/}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% venue style file %%
+% hyperref goes BEFORE the ICML style (it hooks into \hypersetup at load time)
+% and AFTER the NeurIPS style (which redefines the title block).
+\PassOptionsToPackage{hyphens}{url}
+\RequirePackage{url}
+
+\newcommand{\pk@loadhyperref}{%
+  \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}%
+}
+
+% \pkstyledir has to be expanded before \RequirePackage sees the file name.
+\newcommand{\pk@require}[2]{%
+  \edef\pk@load{\noexpand\RequirePackage[#1]{\pkstyledir #2}}\pk@load
+}
+
+\ifpk@arxiv
+  \pk@loadhyperref
+  \ifpk@natbib
+    \pk@require{preprint}{icml2026}
+  \else
+    \pk@require{preprint,nonatbib}{icml2026}
+  \fi
+\fi
+\ifpk@icml
+  \pk@loadhyperref
+  \ifpk@final
+    \ifpk@natbib
+      \pk@require{accepted}{icml2026}
+    \else
+      \pk@require{accepted,nonatbib}{icml2026}
+    \fi
+  \else
+    \ifpk@natbib
+      \pk@require{}{icml2026}
+    \else
+      \pk@require{nonatbib}{icml2026}
+    \fi
+  \fi
+\fi
+\ifpk@neurips
+  \ifpk@nrold
+    \def\pk@venuefile{neurips_2025}
+  \else
+    \def\pk@venuefile{neurips_2026}
+  \fi
+  % NeurIPS camera-ready also needs a track option (main / position / eandd /
+  % creativeai); override with \def\pkneuripstrack{position} before loading.
+  \providecommand{\pkneuripstrack}{main}
+  \ifpk@natbib
+    % Preserve the venue's native natbib path; only preconfigure its options.
+    \PassOptionsToPackage{numbers}{natbib}
+    \ifpk@final
+      \edef\pk@load{\noexpand\RequirePackage[final,\pkneuripstrack]%
+        {\pkstyledir\pk@venuefile}}
+    \else\ifpk@preprint
+      \edef\pk@load{\noexpand\RequirePackage[preprint]{\pkstyledir\pk@venuefile}}
+    \else
+      \edef\pk@load{\noexpand\RequirePackage{\pkstyledir\pk@venuefile}}
+    \fi\fi
+  \else
+    \ifpk@final
+      \edef\pk@load{\noexpand\RequirePackage[nonatbib,final,\pkneuripstrack]%
+        {\pkstyledir\pk@venuefile}}
+    \else\ifpk@preprint
+      \edef\pk@load{\noexpand\RequirePackage[nonatbib,preprint]{\pkstyledir\pk@venuefile}}
+    \else
+      \edef\pk@load{\noexpand\RequirePackage[nonatbib]{\pkstyledir\pk@venuefile}}
+    \fi\fi
+  \fi
+  \pk@load
+  \pk@loadhyperref
+\fi
+% arxiv1col has no venue .sty of its own: it is a plain one-column article that
+% paperkit lays out in the acmsmall manner further down.
+\ifpk@onecol
+  \ifpk@acmtrim
+    % acmart's acmsmall page, copied value for value: a 6.75x10in trim with
+    % 46pt sides, a 58pt top and a 44pt bottom, which lands \textwidth on
+    % 395.82pt and \textheight on 574pt -- the same numbers acmart computes.
+    \RequirePackage{geometry}
+    \geometry{paperwidth=6.75in, paperheight=10in,
+      left=46pt, right=46pt, top=58pt, bottom=44pt,
+      includeheadfoot, head=13pt, headsep=14pt, foot=2pc,
+      marginparwidth=2pc, heightrounded}
+  \else
+    % acmsmall's proportions on a US Letter sheet. Every margin is the same
+    % fraction of the page it is in acmsmall -- sides 0.0943 of the width, top
+    % 0.0803 and bottom 0.0609 of the height -- which puts \textwidth at
+    % 0.8114 of the sheet, exactly as acmart does.
+    %
+    % Those fractions give a 6.9in measure, 1.26 times acmsmall's, so the type
+    % has to grow with it. Measured over an 8k-character sample, a line runs
+    % 122 characters at 10pt, 109 at 11pt and 101 at 12pt, against acmsmall's
+    % own 97. 12pt is the size that matches acmsmall's density, but it sets a
+    % preprint in type noticeably larger than the 10-11pt readers expect; 11pt
+    % takes ~12% more characters per line in exchange for a conventional page.
+    % main.tex says \documentclass{article} for every venue, so the body size
+    % cannot come from a class option; LaTeX's own 11pt definitions are pulled
+    % in here instead, before geometry, which needs the final \baselineskip to
+    % round \textheight against. size11.clo brings LaTeX's own 13.6pt leading.
+    \input{size11.clo}\normalsize
+    \RequirePackage{geometry}
+    \geometry{letterpaper,
+      left=57.93pt, right=57.93pt, top=63.8pt, bottom=48.4pt,
+      includeheadfoot, head=14.3pt, headsep=15.4pt, foot=26.4pt,
+      marginparwidth=2pc, heightrounded}
+  \fi
+  % geometry before hyperref, so hyperref sees the final page size.
+  \pk@loadhyperref
+  \ifpk@natbib
+    \@ifpackageloaded{natbib}{}{\RequirePackage[numbers]{natbib}}
+  \fi
+\fi
+\ifpk@plainvenue
+  \pk@loadhyperref
+  \ifpk@natbib
+    \@ifpackageloaded{natbib}{}{\RequirePackage[numbers]{natbib}}
+  \fi
+\fi
+
+\ifpk@colorlinks
+  \hypersetup{colorlinks=true,linkcolor=black,citecolor=blue!55!black,
+              urlcolor=blue!55!black,filecolor=blue!55!black}
+\fi
+
+% Let \\ inside the title survive its trip into the PDF metadata.
+\AtBeginDocument{%
+  \@ifpackageloaded{hyperref}{\pdfstringdefDisableCommands{\let\\\space}}{}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% common packages %%
+\RequirePackage[T1]{fontenc}
+\RequirePackage{microtype}
+\RequirePackage{graphicx}
+\RequirePackage{subcaption}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{nicefrac}
+\RequirePackage{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{placeins}   % \FloatBarrier
+\RequirePackage{helvet}     % sans-serif for the title panel
+\RequirePackage{tcolorbox}  % rounded title panel
+
+% Better \figure* placement in two-column layouts.
+\if@twocolumn\RequirePackage{stfloats}\fi
+
+\ifpk@minimal\else
+  \RequirePackage{listings}
+  \RequirePackage{pifont}
+  \RequirePackage{tikz}
+  \usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+\fi
+
+% hyperref + algorithmic need this to agree on labels.
+\providecommand{\theHalgorithm}{\arabic{algorithm}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% one-column arXiv %%
+% Fonts and layout for the `arxiv1col' venue: acmart's acmsmall settings --
+% Libertine text (10/12 in acmsmall, 11/13.6 on the wider Letter page above),
+% Biolinum headings, tight run-in subsubsections, a one-em paragraph indent
+% that follows the body size. The page geometry is set with the venue above;
+% this
+% block comes after the common packages on purpose, because libertine has to
+% win over helvet for \sfdefault.
+\ifpk@onecol
+  \ifpk@libertine
+    \IfFileExists{libertine.sty}{%
+      \RequirePackage[tt=false,type1=true]{libertine}%
+      \IfFileExists{zi4.sty}{\RequirePackage[varqu]{zi4}}{}%
+      \IfFileExists{newtxmath.sty}{\RequirePackage[libertine]{newtxmath}}{}%
+    }{%
+      \PackageWarning{paperkit}{Package libertine not installed; arxiv1col
+        falls back to the default fonts. Install libertine, newtx and
+        inconsolata, or pass the `nolibertine' option to silence this}%
+    }%
+  \fi
+
+  % acmsmall paragraphing: a one-em indent and no inter-paragraph glue.
+  \ifpk@acmtrim
+    \setlength{\parindent}{10\p@}
+  \else
+    \setlength{\parindent}{11\p@}
+  \fi
+  \setlength{\parskip}{\z@}
+
+  % Headings: sans bold, flush left, tight above and below; subsubsection and
+  % paragraph run into the text and take a closing period, as in acmart.
+  \newcommand{\pk@headraggedright}{%
+    \@rightskip\@flushglue \rightskip\@rightskip
+    \leftskip\z@skip \parindent\z@}
+  \newcommand{\pk@adddot}[1]{#1.}
+  \renewcommand\section{\@startsection{section}{1}{\z@}%
+    {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
+    {.25\baselineskip}%
+    {\normalfont\sffamily\bfseries\pk@headraggedright}}
+  \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+    {-.75\baselineskip \@plus -2\p@ \@minus -.2\p@}%
+    {.25\baselineskip}%
+    {\normalfont\sffamily\bfseries\pk@headraggedright}}
+  \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+    {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
+    {-3.5\p@}%
+    {\normalfont\sffamily\itshape\pk@adddot}}
+  \renewcommand\paragraph{\@startsection{paragraph}{4}{\parindent}%
+    {-.5\baselineskip \@plus -2\p@ \@minus -.2\p@}%
+    {-3.5\p@}%
+    {\normalfont\itshape\pk@adddot}}
+
+  \captionsetup{labelfont=bf, labelsep=colon, font=small, margin=\z@}
+
+  % acmsmall runs the abstract as a plain paragraph at full measure, with no
+  % centered `Abstract' heading. Only the nopanel path reaches this; the panel
+  % typesets the abstract itself.
+  \renewenvironment{abstract}{\vskip 6\p@\par\noindent\ignorespaces}%
+                             {\par\vskip 6\p@}
+
+  % Native (nopanel) title block, left aligned like acmsmall's, at acmart's
+  % own \LARGE for both page sizes.
+  \def\pk@nativetitlesize{\fontsize{17}{21}}
+  \renewcommand{\@maketitle}{%
+    \null
+    \begin{flushleft}%
+      {\sffamily\bfseries\pk@nativetitlesize\selectfont\@title\par}%
+      \ifx\@author\@empty\else\vskip 12\p@{\@author\par}\fi
+      \ifx\@date\@empty\else\vskip 6\p@{\small\@date\par}\fi
+    \end{flushleft}%
+    \par\vskip 12\p@}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% small niceties %%
+\ifpk@minimal
+  \newcommand{\cmark}{\textcolor{green!60!black}{$\checkmark$}}
+  \newcommand{\xmark}{\textcolor{red!70!black}{$\times$}}
+\else
+  \newcommand{\cmark}{\textcolor{green!60!black}{\ding{51}}}
+  \newcommand{\xmark}{\textcolor{red!70!black}{\ding{55}}}
+\fi
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+\ifpk@minimal\else
+  \lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    framesep=3pt,
+    columns=fullflexible,
+    backgroundcolor=\color{gray!5},
+    keywordstyle=\color{blue!70!black},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red!60!black},
+  }
+\fi
+
+\ifpk@theorems
+  \theoremstyle{plain}
+  \newtheorem{theorem}{Theorem}[section]
+  \newtheorem{lemma}[theorem]{Lemma}
+  \newtheorem{proposition}[theorem]{Proposition}
+  \newtheorem{corollary}[theorem]{Corollary}
+  \theoremstyle{definition}
+  \newtheorem{definition}{Definition}[section]
+  \newtheorem{assumption}{Assumption}[section]
+  \theoremstyle{remark}
+  \newtheorem{remark}{Remark}[section]
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% metadata %%
+\let\pk@title\@empty
+\let\pk@pdftitle\@empty
+\let\pk@authors\@empty
+\let\pk@affils\@empty
+\let\pk@abstract\@empty
+\let\pk@note\@empty
+\let\pk@corr\@empty
+\let\pk@code\@empty
+\let\pk@logotext\@empty
+\let\pk@logofile\@empty
+\let\pk@extralogos\@empty
+\let\pk@shorttitle\@empty
+\let\pk@shortauthors\@empty
+\let\pk@copyright\@empty
+% Empty by default, as in acmart: the first-page head keeps that corner for an
+% optional badge and carries no date. \paperdate{...} opts one in.
+\let\pk@date\@empty
+\let\pk@brandtext\@empty
+\let\pk@brandfile\@empty
+\def\pk@brandheight{11pt}
+\newif\ifpk@brandset \pk@brandsetfalse
+
+% \papertitle[<plain text for PDF metadata>]{<typeset title, \\ allowed>}
+\newcommand{\papertitle}[2][]{%
+  \gdef\pk@title{#2}%
+  \def\pk@tmp{#1}%
+  \ifx\pk@tmp\@empty\gdef\pk@pdftitle{#2}\else\gdef\pk@pdftitle{#1}\fi
+}
+% Short title for the running header: the ICML-based venues take it through
+% \icmltitlerunning, arxiv1col sets it on the recto side of its own head.
+\newcommand{\paperrunningtitle}[1]{%
+  \gdef\pk@shorttitle{#1}%
+  \@ifundefined{icmltitlerunning}{}{\icmltitlerunning{#1}}%
+}
+% Short author list for the verso side of the arxiv1col running head, the way
+% acmsmall uses \shortauthors: `Falck et al.', not the full superscripted list.
+\newcommand{\papershortauthors}[1]{\gdef\pk@shortauthors{#1}}
+% Optional date in the first-page head, opposite the lockup. Off unless set.
+\newcommand{\paperdate}[1]{\gdef\pk@date{#1}}
+% Rights line at the left of the arxiv1col page foot.
+\newcommand{\papercopyright}[1]{\gdef\pk@copyright{#1}}
+\newcommand{\paperauthors}[1]{\gdef\pk@authors{#1}}
+\newcommand{\paperaffiliations}[1]{\gdef\pk@affils{#1}}
+\newcommand{\paperabstract}[1]{\gdef\pk@abstract{#1}}
+\newcommand{\papernote}[1]{\gdef\pk@note{#1}}          % equal contribution, etc.
+\newcommand{\papercorrespondence}[1]{\gdef\pk@corr{#1}}
+\newcommand{\papercode}[1]{\gdef\pk@code{#1}}
+% \paperlogo{<wordmark text>}{<image file, may be empty>}
+\newcommand{\paperlogo}[2]{\gdef\pk@logotext{#1}\gdef\pk@logofile{#2}}
+% \paperbrand[<mark height>]{<mark image>}{<wordmark text>} -- the horizontal
+% lockup at the left of the arxiv1col running head. Either half may be empty,
+% so a ready-made lockup image goes in as \paperbrand{lockup.pdf}{}. Left
+% unset, the head borrows whatever \paperlogo already carries.
+\newcommand{\paperbrand}[3][11pt]{%
+  \pk@brandsettrue
+  \def\pk@brandheight{#1}\gdef\pk@brandfile{#2}\gdef\pk@brandtext{#3}%
+}
+% \addpaperlogo[<height>]{<image file>} -- extra marks, laid out to the right of
+% the first one. Call it once per logo, in the order they should appear.
+\newcommand{\addpaperlogo}[2][\pk@logoheight]{%
+  \expandafter\gdef\expandafter\pk@extralogos\expandafter{\pk@extralogos
+    \,$\vcenter{\hbox{\includegraphics[height=#1]{#2}}}$}%
+}
+
+% Panel appearance.
+\definecolor{pkpanelbg}{HTML}{EEF3F9}
+\newcommand{\paperpanelcolor}[1]{\definecolor{pkpanelbg}{HTML}{#1}}
+\def\pk@titlesize{19}\def\pk@titleskip{23}
+\let\pk@footerfont\@empty
+% arxiv1col takes acmart's title size and drops the footer a size to keep the
+% correspondence line beside the logos rather than under them.
+%
+% acmart sets the acmsmall title with \LARGE, which is \@xviipt = 17.28pt in
+% both size10.clo and size11.clo -- the title does not scale with the body, so
+% both pages get the same 17pt whether the body is acmtrim's 10pt or the
+% Letter page's 11pt.
+\ifpk@onecol
+  \def\pk@titlesize{17}\def\pk@titleskip{21}
+  \let\pk@footerfont\small
+\fi
+\newcommand{\papertitlesize}[2]{\def\pk@titlesize{#1}\def\pk@titleskip{#2}}
+\def\pk@panelarc{8pt}
+\newcommand{\paperpanelarc}[1]{\def\pk@panelarc{#1}}
+\def\pk@logoheight{30pt}
+\newcommand{\paperlogoheight}[1]{\def\pk@logoheight{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% panel header %%
+% Wrapped in \newtcolorbox on purpose: writing \begin{tcolorbox}[...] inside
+% \twocolumn[...] breaks, because LaTeX reads the option list's `]' as the end
+% of the \twocolumn argument.
+\newtcolorbox{pk@panelbox}{%
+  colback=pkpanelbg,
+  colframe=pkpanelbg,
+  arc=\pk@panelarc,
+  boxrule=0pt,
+  left=18pt, right=18pt, top=16pt, bottom=14pt,
+  width=\textwidth,
+  enlarge left by=0pt,
+  enlarge right by=0pt,
+}
+
+% Both of these live out here, not inside the venue conditionals that use
+% them: a \newif inside a branch TeX may skip leaves the \ifpk@... token
+% undefined while skipping, so its \fi is counted without the \if that opened
+% it and the skip ends one \fi early.
+\newif\ifpk@footer
+\newif\ifpk@firstfoot
+\newcommand{\pk@footerrow}{%
+  \pk@footerfalse
+  \ifx\pk@corr\@empty\else\pk@footertrue\fi
+  \ifx\pk@code\@empty\else\pk@footertrue\fi
+  \ifx\pk@logotext\@empty\else\pk@footertrue\fi
+  \ifx\pk@logofile\@empty\else\pk@footertrue\fi
+  \ifx\pk@extralogos\@empty\else\pk@footertrue\fi
+  \ifpk@footer\pk@footerrow@\fi
+}
+% \parbox, not minipage: the optional argument of \begin{minipage}[c]{..} is
+% mis-parsed inside \twocolumn[...] for the same `]' reason as above.
+% The correspondence line is long and the box is narrow, so set it ragged
+% right: justifying it stretches the interword spaces into gaps.
+\newcommand{\pk@footerrow@}{%
+  \vskip 14pt
+  \noindent
+  \parbox{0.62\linewidth}{%
+    \raggedright\pk@footerfont
+    \ifx\pk@corr\@empty\else
+      \noindent\textbf{Correspondence:}\ \pk@corr\par\vskip 2pt
+    \fi
+    \ifx\pk@code\@empty\else
+      \noindent\textbf{Code:}\ \pk@code
+    \fi
+  }\hfill
+  \ifx\pk@logotext\@empty\else
+    $\vcenter{\hbox{\sffamily\bfseries\small \pk@logotext}}$\,%
+  \fi
+  \ifx\pk@logofile\@empty\else
+    $\vcenter{\hbox{\includegraphics[height=\pk@logoheight]{\pk@logofile}}}$%
+  \fi
+  \pk@extralogos
+}
+
+% The title block is flush left in every venue, acmsmall's own arrangement and
+% the one the panel has always used. Abstract justification is a separate
+% question, settled by venue below: arxiv1col justifies, the two-column panel
+% keeps the ragged right it has always had.
+\newif\ifpk@panelcenter \pk@panelcenterfalse
+% \paperheadalign{center} or {left}
+\def\pk@centerword{center}
+\newcommand{\paperheadalign}[1]{%
+  \def\pk@alignarg{#1}%
+  \ifx\pk@alignarg\pk@centerword\pk@panelcentertrue\else\pk@panelcenterfalse\fi}
+
+\newcommand{\pk@panelbody}{%
+  \begin{pk@panelbox}
+    % The title block, centred or flush left. Each piece closes its own \par
+    % inside the group, so the alignment reaches the last line of each.
+    \begingroup
+      \ifpk@panelcenter\centering\else\raggedright\fi
+      {\sffamily\bfseries\fontsize{\pk@titlesize}{\pk@titleskip}\selectfont
+        \pk@title\par}
+      \ifpk@anon
+        \vskip 12pt
+        {\sffamily\bfseries\normalsize Anonymous Authors\par}
+        \vskip 4pt
+        {\small Paper under double-blind review\par}
+      \else
+        \ifx\pk@authors\@empty\else
+          \vskip 12pt
+          {\sffamily\bfseries\normalsize \pk@authors\par}
+        \fi
+        \ifx\pk@affils\@empty\else
+          \vskip 6pt
+          {\small \pk@affils\par}
+        \fi
+        \ifx\pk@note\@empty\else
+          \vskip 4pt
+          {\small \pk@note\par}
+        \fi
+      \fi
+    \endgroup
+    % Justified under arxiv1col, ragged in the two-column panel. This does not
+    % follow the title alignment: \paperheadalign moves the block above without
+    % disturbing the abstract's setting.
+    \ifx\pk@abstract\@empty\else
+      \vskip 14pt
+      \ifpk@onecol\else\raggedright\fi
+      \pk@abstract\par
+    \fi
+    % arxiv1col moves correspondence and code to the foot of the first page,
+    % so the panel ends at the abstract and the mark is left to the head.
+    \ifpk@onecol\else\ifpk@anon\else\pk@footerrow\fi\fi
+  \end{pk@panelbox}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% native header %%
+% Everything the venue style already knows how to typeset. NeurIPS handles its
+% own anonymization, so we hand it the real author block unconditionally.
+\newcommand{\pk@authorblock}{%
+  \pk@authors
+  \ifx\pk@affils\@empty\else\\[2pt]{\small\pk@affils}\fi
+  \ifx\pk@corr\@empty\else\\[2pt]{\small\texttt{\pk@corr}}\fi
+}
+
+\newcommand{\pk@nativeheader}{%
+  \title{\pk@title}%
+  \author{\pk@authorblock}%
+  \maketitle
+  \ifx\pk@abstract\@empty\else
+    \begin{abstract}\pk@abstract\end{abstract}%
+  \fi
+}
+
+% ICML's native block wants \icmlauthorlist / \icmlaffiliation, which paperkit
+% deliberately does not wrap. Write them yourself in main.tex if you need the
+% real thing; this is a readable stand-in.
+\newcommand{\pk@icmlheader}{%
+  \twocolumn[%
+    \icmltitle{\pk@title}%
+    \pk@icmlauthorbox
+  ]%
+}
+\newcommand{\pk@icmlauthorbox}{%
+  \begin{center}
+    \ifpk@anon
+      {\bfseries Anonymous Authors\par}
+      \vskip 4pt{\small Paper under double-blind review\par}
+    \else
+      \ifx\pk@authors\@empty\else{\bfseries\pk@authors\par}\fi
+      \ifx\pk@affils\@empty\else\vskip 4pt{\small\pk@affils\par}\fi
+      \ifx\pk@note\@empty\else\vskip 4pt{\small\pk@note\par}\fi
+    \fi
+  \end{center}
+  \vskip 0.2in
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% arxiv1col running head and foot %%
+% A branded page furniture for the one-column preprint: the lockup at the left
+% of the head on every page, and opposite it the date on page 1 and then
+% acmsmall's alternation -- short title on the recto, short authors on the
+% verso -- from page 2 on. No rules at either end, as in acmart; the foot
+% carries the page number at the outer edge and nothing else by default.
+
+% The two colours the ARA mark is drawn in.
+\definecolor{pkbrandink}{HTML}{16122D}
+\definecolor{pkbrandaccent}{HTML}{E9A16F}
+% \paperbrandcolor{<ink hex>}{<accent hex>}
+\newcommand{\paperbrandcolor}[2]{%
+  \definecolor{pkbrandink}{HTML}{#1}\definecolor{pkbrandaccent}{HTML}{#2}}
+% pkbrandink dresses the lockup. pkbrandaccent is the square on the mark; the
+% furniture does not use it, but it is here for \textcolor in the body.
+
+\ifpk@onecol\ifpk@header
+  \RequirePackage{fancyhdr}
+
+  % Unset, the lockup falls back to the panel logo. Resolved once the preamble
+  % has run, so \paperlogo and \paperbrand may come in either order.
+  \AtBeginDocument{%
+    \ifpk@brandset\else
+      \let\pk@brandfile\pk@logofile
+      \let\pk@brandtext\pk@logotext
+    \fi
+  }
+
+  % acmart's \@headfootfont, which under Libertine means Biolinum -- the same
+  % sans the section heads use, at footnote size. It dresses the running head,
+  % the first-page date, and the folio, exactly the three things acmart sets
+  % in it. The rights line keeps the serif, as acmart's journal line does.
+  \def\pk@headfootfont{\sffamily\footnotesize}
+
+  % The wordmark takes the head font rather than a size of its own, so it
+  % matches the title opposite it at either body size -- 9pt on Letter, 8pt
+  % under acmtrim -- and it stays on the ordinary baseline, so the two sides
+  % of the head sit on one line. Only the mark is \vcenter'd, which centres it
+  % on that baseline and keeps a tall image from shifting the head. \vcenter
+  % needs math mode, hence the $...$. The ink is never the rule colour.
+  \newcommand{\pk@lockup}{%
+    \begingroup
+      \color{pkbrandink}\pk@headfootfont
+      \ifx\pk@brandfile\@empty\else
+        $\vcenter{\hbox{\includegraphics[height=\pk@brandheight]{\pk@brandfile}}}$%
+      \fi
+      \ifx\pk@brandtext\@empty\else
+        \ifx\pk@brandfile\@empty\else\hskip 5\p@\fi
+        \pk@brandtext
+      \fi
+    \endgroup
+  }
+
+  % acmsmall's alternation. Either side falls back to the other, so a paper
+  % that sets only \paperrunningtitle still gets a head on every page.
+  \newcommand{\pk@head@title}{%
+    \ifx\pk@shorttitle\@empty\pk@pdftitle\else\pk@shorttitle\fi}
+  \newcommand{\pk@head@authors}{%
+    \ifx\pk@shortauthors\@empty\pk@head@title\else\pk@shortauthors\fi}
+  \newcommand{\pk@runninghead}{%
+    \pk@headfootfont
+    \ifodd\value{page}\pk@head@title\else\pk@head@authors\fi}
+
+  % No rules, at either end. acmart draws none in any of its formats -- both
+  % standardpagestyle and firstpagestyle zero the two widths -- and the lockup
+  % and the running title mark the head well enough on their own.
+  \renewcommand{\headrulewidth}{\z@}
+  \renewcommand{\footrulewidth}{\z@}
+
+  \newcommand{\pk@foot@left}{%
+    \ifx\pk@copyright\@empty\else{\footnotesize\pk@copyright}\fi}
+  \newcommand{\pk@foot@right}{{\pk@headfootfont\thepage}}
+
+  % Correspondence and code go to the foot of the first page, where acmsmall
+  % puts its author addresses, instead of riding under the abstract. Set in a
+  % \parbox so a long address wraps instead of running into the folio; the
+  % measure stops short of it. Two lines clear the bottom margin, a third
+  % would not, so the rights line only joins them if it is short.
+  \newcommand{\pk@firstfoot@left}{%
+    \pk@firstfootfalse
+    \ifx\pk@corr\@empty\else\pk@firstfoottrue\fi
+    \ifx\pk@code\@empty\else\pk@firstfoottrue\fi
+    \ifx\pk@copyright\@empty\else\pk@firstfoottrue\fi
+    \ifpk@firstfoot
+      \parbox[t]{.86\headwidth}{%
+        \footnotesize\raggedright
+        \ifx\pk@corr\@empty\else
+          \textbf{Correspondence:}\ \pk@corr\par
+        \fi
+        \ifx\pk@code\@empty\else
+          \textbf{Code:}\ \pk@code\par
+        \fi
+        \ifx\pk@copyright\@empty\else\pk@copyright\par\fi
+      }%
+    \fi
+  }
+
+  % Page 1: lockup against the date.
+  \fancypagestyle{pkfirst}{%
+    \fancyhf{}%
+    \fancyhead[L]{\pk@lockup}%
+    \fancyhead[R]{\ifx\pk@date\@empty\else{\pk@headfootfont\pk@date}\fi}%
+    \fancyfoot[L]{\pk@firstfoot@left}%
+    \fancyfoot[R]{\pk@foot@right}%
+  }
+  % Page 2 on: lockup against the alternating title / author list.
+  \fancypagestyle{pkmain}{%
+    \fancyhf{}%
+    \fancyhead[L]{\pk@lockup}%
+    \fancyhead[R]{\pk@runninghead}%
+    \fancyfoot[L]{\pk@foot@left}%
+    \fancyfoot[R]{\pk@foot@right}%
+  }
+  \AtBeginDocument{\pagestyle{pkmain}}
+\fi\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% render %%
+\newcommand{\makepaperheader}{%
+  \ifx\pk@title\@empty
+    \PackageError{paperkit}{No title}%
+      {Set \string\papertitle{...} in the preamble before \string\makepaperheader.}%
+  \fi
+  % The ICML style nags at \end{document} unless \printAffiliationsAndNotice
+  % was called. paperkit's header carries that information itself.
+  \@ifundefined{icml@noticeprintedtrue}{}{\global\icml@noticeprintedtrue}%
+  \ifpk@panel
+    \if@twocolumn
+      \twocolumn[\thispagestyle{plain}\pk@panelbody]%
+    \else
+      \thispagestyle{plain}\pk@panelbody\vskip 14pt
+    \fi
+  \else
+    \ifpk@icml
+      \pk@icmlheader
+      \ifx\pk@abstract\@empty\else\begin{abstract}\pk@abstract\end{abstract}\fi
+    \else
+      \ifpk@arxiv
+        \pk@icmlheader
+        \ifx\pk@abstract\@empty\else\begin{abstract}\pk@abstract\end{abstract}\fi
+      \else
+        \pk@nativeheader
+      \fi
+    \fi
+  \fi
+  % Last, so it wins over the \thispagestyle{plain} that the panel branch and
+  % \maketitle both issue for the first page.
+  \ifpk@onecol\ifpk@header\thispagestyle{pkfirst}\fi\fi
+  \@ifundefined{hypersetup}{}{\hypersetup{pdftitle={\pk@pdftitle}}}%
+}
+\endinput

@@ -1,0 +1,20 @@
+We show that a 9B open-weight model, adapted for \$20 of GPU time, answers
+closed-book factual questions about a real hardware platform more accurately
+than Claude Opus~5 (92.8\% vs.\ 72.0\% on a 125-question layered audit set;
+81.6\% vs.\ 72.2\% on the full 1{,}776-question bank). The setting is the one
+every chip company faces: the knowledge an internal assistant needs---register
+maps, memory maps, build pins, driver conventions, issue history---appears in
+no pretraining corpus, and the obvious recipe, continued pretraining on the raw
+internal corpus, \emph{silently fails}: training loss drops by more than half
+while question-answering recall of memorized facts does not move at all. This
+report documents the decision chain of a small, fully open study on the PULP
+Carfield/Cheshire platform: which testbed to use (and why a popular open-source
+chip cannot serve as one), continued pretraining versus fine-tuning versus
+retrieval, and---centrally---a knowledge-rewriting augmentation stage whose
+design rules (full coverage of all facts, template diversity over repetition,
+reversed statements, whole-table narratives against similar-fact interference)
+each trace to a measured failure of a simpler variant. We also report how our
+own auto-generated benchmark misled us twice (lexically leaky multiple-choice
+questions, format-incomplete few-shot exemplars) and how we repaired it. All
+code, data pipeline, benchmark, and model weights are released; the entire
+study, including every ablation and baseline, cost about \$330.

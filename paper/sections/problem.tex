@@ -1,0 +1,43 @@
+\section{The Problem We Are Actually Solving}
+\label{sec:problem}
+
+\paragraph{The customer's question.}
+A chip team with a fully closed-source design wants an internal assistant that
+knows the chip the way a senior engineer does. Before committing to a training
+program, two prior questions must be answered with evidence rather than
+enthusiasm.
+
+\paragraph{Question 1: where can a self-trained model beat the frontier?}
+Not on public skills. We reproduced the VeriThoughts fine-tuning
+pipeline~\citep{yubeaton2025verithoughts} as a calibration exercise and then
+ran Claude Opus~5 on the same formally-verified Verilog benchmark: the frontier
+model scores 95.3\% pass@1, above the fine-tuned specialist models the
+literature celebrates. Public RTL generation is saturating; a 7--9B model
+fine-tuned on public data differentiates nothing. What a frontier model
+\emph{cannot} have is knowledge that never reached its training set---the
+proprietary chip itself. Knowledge injection is therefore not one use case
+among many; it is the only battleground where the self-trained model holds
+structural advantage.
+
+\paragraph{Question 2: what counts as ``knowing''?}
+We require \emph{closed-book} recall: no retrieval, no context documents, the
+fact must come out of the weights. This is a deliberate, restrictive choice.
+Retrieval-augmented generation answers lookup questions well, but the
+engineer-facing failures we target---cross-file reasoning, ``which function
+configures this register,'' recall inside a debugging conversation where
+nobody pastes the register map---degrade precisely when knowledge lives only
+in an external index. Testing closed-book recall isolates the property we are
+trying to buy with training compute. (Whether RAG plus a frontier model is the
+better \emph{product} for a given team is a separate question our open
+questions section returns to; this study measures what training can inject.)
+
+\paragraph{Requirements.}
+The study therefore needs: (i) a testbed whose facts are verifiably absent or
+scarce in frontier pretraining, yet real enough that results transfer to a
+customer engagement; (ii) an evaluation that is machine-checkable, layered
+across the kinds of knowledge an engineer uses, and hardened against the
+model answering by surface pattern rather than knowledge; (iii) a recipe
+whose every component is justified by an ablation, because the customer will
+ask ``do we need this step?''\ for each one; and (iv) a budget a small team
+can spend without procurement: everything here, including all failed
+branches, cost about \$330 of API and GPU spend.

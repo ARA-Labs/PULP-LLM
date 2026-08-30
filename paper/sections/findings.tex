@@ -1,0 +1,39 @@
+\section{Findings}
+\label{sec:findings}
+
+Eight lessons, each traceable to a measurement above; we believe they transfer
+to any ``teach a model our internal system'' effort.
+
+\begin{enumerate}
+  \item \textbf{Raw-corpus continued pretraining fails silently.} Loss halves;
+  extraction does not move (1/42 $\rightarrow$ 1/42). Never accept a loss
+  curve as evidence of knowledge injection.
+  \item \textbf{Knowledge rewriting is the enabling stage, not an
+  optimization.} Every point of closed-book gain in this study is downstream
+  of restating facts in many surface forms. Corollary for data cleaning:
+  redundant restatements of the same fact in a customer corpus are
+  \emph{assets}; semantic deduplication destroys exactly the diversity that
+  makes facts extractable.
+  \item \textbf{Coverage determines the extractable scope.} Augmented layers
+  improve; unaugmented layers match the untrained base to the question.
+  Enumerate the full fact inventory; let the benchmark sample it.
+  \item \textbf{Diversity beats repetition, and word order is part of
+  diversity.} 24 templates $\times$ 6 repeats beats 6 templates $\times$ 8;
+  reversed statements are required, not optional~\citep{berglund2023reversal}.
+  \item \textbf{Interference, not exposure, limits dense fact tables.} At
+  equal exposure: distinctive facts 8/9, near-identical facts 9/42. Give
+  similar facts distinguishing context---whole-table narratives---rather than
+  more repeats.
+  \item \textbf{Auto-generated benchmarks need adversarial audits.} A frontier
+  model probing our benchmark exposed lexical leaks (100\% without knowledge)
+  and format holes that a weaker model would have hidden. Budget for auditing
+  the benchmark like code.
+  \item \textbf{Delete question types that measure nothing.} Arbitrary-mapping
+  recall (issue number $\leftrightarrow$ title) stayed $\le$27\% for every
+  model and would have dominated the aggregate; a benchmark's distribution is
+  a design decision, not a harvest.
+  \item \textbf{The systems margin is real and cheap.} Kernel choice and
+  parallelism configuration bought 7.6$\times$ end-to-end training throughput
+  in two 15-step smoke tests; at small budgets, configuration \emph{is}
+  capacity.
+\end{enumerate}

@@ -1,0 +1,35 @@
+\section{Limitations and Open Questions}
+\label{sec:limitations}
+
+\textbf{Stated plainly, because each one shapes what we would do next.}
+
+\emph{No forgetting audit yet.} We have not measured general-capability
+regression (e.g.\ an MMLU subset) after DAPT; the 8\% replay mix follows
+ChipNeMo practice but is unverified here. This is the first gap we would
+close.
+
+\emph{Single seed, single platform.} Every number is one training run on one
+platform; the ablation ladder's steps are large (+37.6 points for the recipe
+change) but error bars would still become necessary before any causal claim
+about smaller effects.
+
+\emph{Bundled recipe components.} Full coverage, template count, reversal, and
+whole-table narratives shipped together in the final run; their individual
+contributions are not isolated. The interference explanation
+(Finding~5) in particular rests on one observation and needs a controlled
+similarity$\times$exposure$\times$context experiment.
+
+\emph{L3 does not differentiate.} Register naming is descriptive by design, so
+description$\leftrightarrow$name multiple choice is partially solvable by
+semantic matching; all models score $\ge$89\% there even after leak
+filtering.
+
+\emph{Remaining model weaknesses.} Numeric range membership (which region
+contains address $X$: 11/27) resists declarative augmentation---it needs
+reasoning over the map, suggesting either chain-style augmentation or an SFT
+stage; issue-history recall remains weak for all models.
+
+\emph{No RAG comparison.} This study measures what training injects into
+weights; a deployment-oriented comparison against retrieval (and against
+retrieval \emph{plus} our adapted model) is the obvious next experiment, and
+we expect the hybrid to win.

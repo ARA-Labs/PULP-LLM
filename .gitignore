@@ -7,3 +7,9 @@ carfield/
 !third_party/carfield
 logs/
 *.log
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.blg
+paper/*.bbl
+paper/build/

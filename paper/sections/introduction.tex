@@ -1,0 +1,80 @@
+\section{Introduction}
+\label{sec:intro}
+
+Chip companies keep asking the same question of their AI teams: \emph{can we
+have a model that actually knows our chip?} The knowledge in question is
+concrete and unforgiving---the byte offset of a register, which memory region
+an address belongs to, which driver function touches which register, which
+dependency version the build pins, what a two-line note in the register
+description implies. None of it appears in any public pretraining corpus,
+because the chip is proprietary; and an assistant that guesses a register
+offset is worse than no assistant at all. ChipNeMo~\citep{liu2023chipnemo}
+demonstrated at NVIDIA that domain-adaptive pretraining (DAPT) over internal
+data can build such a model, but its corpus, evaluations, and most operational
+details are internal, its compute budget is far beyond a small team, and the
+public account leaves the practitioner's actual questions open: what do you do
+first, what fails, and how do you know your model \emph{knows} rather than
+retrieves or guesses?
+
+This report answers those questions with a small, fully reproducible study.
+We picked a real, actively developed but obscure hardware platform---PULP
+Carfield/Cheshire (ETH Z\"urich)---as a public stand-in for a proprietary
+chip, and asked: with an open 9B model, an open training stack, and a few
+hundred dollars, can knowledge injection be made to work \emph{and be shown to
+work}? The headline answer is yes: our adapted model answers 92.8\% of a
+layered closed-book benchmark versus 72.0\% for Claude Opus~5, and 81.6\%
+versus 72.2\% on the full bank of 1{,}776 auto-generated questions, of which
+only 125 were ever inspected during development
+(Figure~\ref{fig:ladder}).
+
+The number, however, is not the contribution. The contribution is the
+\emph{decision chain}: at every fork of this project there were several
+plausible options, the default option usually failed, and the failure was
+measurable. Continued pretraining on the raw corpus---the recipe most teams
+would try first---reduced training loss from 0.80 to 0.35 while leaving
+memorization accuracy \emph{exactly unchanged}, an industrial-scale
+confirmation of the extraction results of
+\citet{allenzhu2023physics31}. Augmenting only the facts we happened to quiz
+inflated the score on those facts and did nothing anywhere else. Our own
+auto-generated benchmark twice reported numbers that had nothing to do with
+knowledge, once through lexical leakage in multiple-choice construction and
+once through a missing answer-format exemplar in the few-shot prompt. Each of
+these failures produced a design rule, and the final recipe is nothing more
+than the accumulation of those rules.
+
+Concretely, this report documents:
+\begin{itemize}
+  \item \textbf{Problem framing} (\S\ref{sec:problem}): why
+  ``knowledge in weights'' is the requirement worth testing---and why public
+  code-generation benchmarks, which frontier models now saturate, cannot
+  differentiate an internal-knowledge model.
+  \item \textbf{Design decisions} (\S\ref{sec:decisions}): six forks in the
+  road---testbed, adaptation method, base model, data recipe, evaluation
+  design, and systems configuration---each presented as the options we
+  considered, the choice we made, and the measurement behind it.
+  \item \textbf{Results} (\S\ref{sec:results}): the ablation ladder from 43.2\%
+  to 92.8\%, layer-by-layer profiles against a frontier baseline, and a
+  full-bank anti-overfitting check on 1{,}651 never-inspected questions.
+  \item \textbf{Findings} (\S\ref{sec:findings}): eight transferable lessons on
+  knowledge injection and on auditing auto-generated benchmarks, with the
+  evidence for each.
+\end{itemize}
+
+Everything is open: the corpus pipeline, the augmentation generator, the
+benchmark and its generator, per-question results for every model, the trained
+weights, and the training configuration.\footnote{Code and benchmark:
+\url{https://github.com/ARA-Labs/chip-knowledge-dapt}. Weights:
+\url{https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT}.}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig1_ladder.pdf}
+  \caption{\textbf{The recipe, not the corpus, carries the result.} Closed-book
+  accuracy on the 125-question layered audit set. Continued pretraining on the
+  raw 31M-token corpus leaves memorization at base level despite halving
+  training loss (pilot measurement, \S\ref{sec:d4}); augmenting only the
+  quizzed facts helps only those facts (55.2\%); the full recipe---coverage of
+  all facts, 24 diverse templates, reversed forms, whole-table
+  narratives---reaches 92.8\%, surpassing Claude Opus~5 (dashed line).}
+  \label{fig:ladder}
+\end{figure}

@@ -1,0 +1,21 @@
+\section{Related Work}
+\label{sec:related}
+
+ChipNeMo~\citep{liu2023chipnemo} established the DAPT-for-chip-knowledge
+paradigm at industrial scale and supplies several rules we adopt unmodified
+(base-model start, full-parameter low-LR training, replay mixing); our study
+differs in being fully open, three orders of magnitude cheaper, and centered
+on the question ChipNeMo's internal evaluation could not expose publicly:
+\emph{what makes injected knowledge extractable}. The answer traces to
+\citet{allenzhu2023physics31}, who showed with synthetic corpora that facts
+stated in a single form resist question-answering extraction unless training
+data is augmented with paraphrases; we reproduce this on a real 31M-token
+engineering corpus and quantify its coverage boundary. The reversal
+curse~\citep{berglund2023reversal} motivates our reversed templates. On the
+evaluation side, code-generation benchmarks with formal
+verification~\citep{yubeaton2025verithoughts} measure a skill frontier models
+now largely possess (95.3\% pass@1 in our reproduction); our benchmark instead
+targets closed-book platform knowledge, where the same frontier model scores
+72\%. Training and serving infrastructure:
+LLaMA-Factory~\citep{zheng2024llamafactory},
+ZeRO~\citep{rajbhandari2019zero}, vLLM~\citep{kwon2023vllm}.

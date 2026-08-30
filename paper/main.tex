@@ -1,0 +1,46 @@
+\documentclass{article}
+
+% Venue: arxiv | arxiv1col | icml | neurips | neurips2025 | plain
+\usepackage[arxiv]{styles/paperkit}
+\usepackage{booktabs}
+
+\newcommand{\method}{\textsc{Chip-Knowledge DAPT}}
+
+\papertitle[Teaching a 9B Model a Chip It Has Never Seen]{%
+  Teaching a 9B Model a Chip It Has Never Seen:\\
+  Decisions and Dead Ends from a \$330 Knowledge-Injection Study%
+}
+\paperrunningtitle{Teaching a 9B Model a Chip It Has Never Seen}
+
+\paperauthors{Jiachen Liu}
+\paperaffiliations{ARA Labs}
+
+\paperabstract{\input{sections/abstract}}
+
+\papercorrespondence{Jiachen Liu (\href{mailto:amberljc@umich.edu}{amberljc@umich.edu})}
+\papercode{\href{https://github.com/ARA-Labs/chip-knowledge-dapt}{github.com/ARA-Labs/chip-knowledge-dapt}}
+\paperlogo{}{figures/ara-logo.png}
+\paperlogoheight{20pt}
+\paperbrand[11pt]{figures/ara-logo.png}{ARA Labs}
+\papershortauthors{Liu}
+
+\begin{document}
+
+\makepaperheader
+
+\input{sections/introduction}
+\input{sections/problem}
+\input{sections/decisions}
+\input{sections/results}
+\input{sections/findings}
+\input{sections/related}
+\input{sections/limitations}
+\FloatBarrier
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{sections/appendix}
+
+\end{document}

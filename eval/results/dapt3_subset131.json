@@ -1,0 +1,682 @@
+{
+ "summary": {
+  "tag": "dapt3_v3",
+  "model": "/vol/models/dapt3",
+  "n": 131,
+  "acc": 0.8931297709923665,
+  "by_type": {
+   "T1": "8/8",
+   "T1h": "10/10",
+   "T7h": "6/6",
+   "T3": "10/10",
+   "T4": "6/6",
+   "L2_bender": "8/8",
+   "L2_region": "4/10",
+   "L2_size": "7/8",
+   "L3_desc2reg": "14/14",
+   "L3_field": "2/2",
+   "L3_reg2desc": "16/16",
+   "L4_fn2macro": "5/5",
+   "L4_macro2fn": "15/15",
+   "L5_num2title": "1/6",
+   "L5_title2repo": "5/7"
+  }
+ },
+ "rows": [
+  {
+   "id": 22,
+   "raw": "0xa8\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1",
+   "ok": true
+  },
+  {
+   "id": 21,
+   "raw": "0x24\n\nQ: In the axi_llc peripheral, which register does the phrase \"Flushed",
+   "ok": true
+  },
+  {
+   "id": 1,
+   "raw": "0x64\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 18,
+   "raw": "0x2c\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_",
+   "ok": true
+  },
+  {
+   "id": 6,
+   "raw": "0x34\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 12,
+   "raw": "0xe4\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_1",
+   "ok": true
+  },
+  {
+   "id": 3,
+   "raw": "0x40\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_",
+   "ok": true
+  },
+  {
+   "id": 9,
+   "raw": "0xc\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register",
+   "ok": true
+  },
+  {
+   "id": 395,
+   "raw": "0x0\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1",
+   "ok": true
+  },
+  {
+   "id": 137,
+   "raw": "0x268\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is",
+   "ok": true
+  },
+  {
+   "id": 383,
+   "raw": "0x3c\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 199,
+   "raw": "0x58\n\nQ: In the axi_rt register map, the WRITE_BUDGET_LEFT_1",
+   "ok": true
+  },
+  {
+   "id": 362,
+   "raw": "0x80\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_",
+   "ok": true
+  },
+  {
+   "id": 79,
+   "raw": "0x50\n\nQ: In the axi_llc register map, the CFG_FLUSH_HIGH register is located",
+   "ok": true
+  },
+  {
+   "id": 103,
+   "raw": "0x2c\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 128,
+   "raw": "0x98\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 245,
+   "raw": "0x1c4\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH",
+   "ok": true
+  },
+  {
+   "id": 377,
+   "raw": "0x4\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1",
+   "ok": true
+  },
+  {
+   "id": 411,
+   "raw": "0x2000000\n\nQ: In the axi_llc register map, the FL",
+   "ok": true
+  },
+  {
+   "id": 415,
+   "raw": "0x3000000\n\nQ: In the axi_llc register map, the FL",
+   "ok": true
+  },
+  {
+   "id": 414,
+   "raw": "0x20c0000\n\nQ: In the axi_llc register map, the FL",
+   "ok": true
+  },
+  {
+   "id": 418,
+   "raw": "0x40000000\n\nQ: In the axi_llc register map, the",
+   "ok": true
+  },
+  {
+   "id": 413,
+   "raw": "0x2080000\n\nQ: In the axi_llc register map, the FL",
+   "ok": true
+  },
+  {
+   "id": 417,
+   "raw": "0x20000000\n\nQ: In the axi_llc register map, the",
+   "ok": true
+  },
+  {
+   "id": 45,
+   "raw": "0:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at",
+   "ok": true
+  },
+  {
+   "id": 32,
+   "raw": "31:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 42,
+   "raw": "31:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 37,
+   "raw": "0:0\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_3",
+   "ok": true
+  },
+  {
+   "id": 28,
+   "raw": "31:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 27,
+   "raw": "31:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 47,
+   "raw": "15:0\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 48,
+   "raw": "31:0\n\nQ: At which byte offset does the WRITE_BUDGET_1 register of the ax",
+   "ok": true
+  },
+  {
+   "id": 39,
+   "raw": "15:0\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_",
+   "ok": true
+  },
+  {
+   "id": 49,
+   "raw": "31:0\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located",
+   "ok": true
+  },
+  {
+   "id": 55,
+   "raw": "ro\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byt",
+   "ok": true
+  },
+  {
+   "id": 51,
+   "raw": "rw\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 72,
+   "raw": "rw\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 74,
+   "raw": "ro\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byt",
+   "ok": true
+  },
+  {
+   "id": 58,
+   "raw": "rw\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 69,
+   "raw": "rw\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 420,
+   "raw": "0.39.1\n\nQ: In the axi repository, issue #100 carries the title",
+   "ok": true
+  },
+  {
+   "id": 425,
+   "raw": "1.0.4\n\nQ: In the axi repository, issue #100 carries the title \"",
+   "ok": true
+  },
+  {
+   "id": 426,
+   "raw": "1.31.1\n\nQ: In the axi repository, issue #400 carries the title",
+   "ok": true
+  },
+  {
+   "id": 423,
+   "raw": "0.2.3\n\nQ: In the axi repository, issue #100 carries the title \"",
+   "ok": true
+  },
+  {
+   "id": 419,
+   "raw": "0.4.2\n\nQ: In the axi repository, issue #300 carries the title \"",
+   "ok": true
+  },
+  {
+   "id": 422,
+   "raw": "1.1.0\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW",
+   "ok": true
+  },
+  {
+   "id": 424,
+   "raw": "1.0.2\n\nQ: In the axi repository, issue #165 carries the title \"",
+   "ok": true
+  },
+  {
+   "id": 421,
+   "raw": "3.0.3\n\nQ: In the axi repository, issue #100 carries the title \"",
+   "ok": true
+  },
+  {
+   "id": 454,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": false
+  },
+  {
+   "id": 435,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": false
+  },
+  {
+   "id": 436,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 456,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": false
+  },
+  {
+   "id": 427,
+   "raw": "D\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": false
+  },
+  {
+   "id": 466,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 429,
+   "raw": "C\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": false
+  },
+  {
+   "id": 428,
+   "raw": "C\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": false
+  },
+  {
+   "id": 439,
+   "raw": "0x40\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_",
+   "ok": true
+  },
+  {
+   "id": 463,
+   "raw": "0x10000\n\nQ: In the axi_llc register map, the FLUSHED",
+   "ok": true
+  },
+  {
+   "id": 455,
+   "raw": "0x10000\n\nQ: In the axi_llc register map, the FLUSHED",
+   "ok": false
+  },
+  {
+   "id": 453,
+   "raw": "0x40000\n\nQ: In the axi_llc register map, the FLUSHED",
+   "ok": true
+  },
+  {
+   "id": 443,
+   "raw": "0x1000\n\nQ: In the axi_llc register map, the FLUSHED_SET",
+   "ok": true
+  },
+  {
+   "id": 465,
+   "raw": "0x4000000\n\nQ: In the axi_llc register map, the FL",
+   "ok": true
+  },
+  {
+   "id": 437,
+   "raw": "0x40000\n\nQ: In the axi_llc register map, the FLUSHED",
+   "ok": true
+  },
+  {
+   "id": 467,
+   "raw": "0x1000\n\nQ: In the axi_llc register map, the FLUSHED_SET",
+   "ok": true
+  },
+  {
+   "id": 470,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 450,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 481,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 477,
+   "raw": "D\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 476,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 472,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 508,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 513,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 484,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 487,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 517,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 482,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 524,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 512,
+   "raw": "C\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 492,
+   "raw": "B\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_3 register is located",
+   "ok": true
+  },
+  {
+   "id": 510,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_PARTITION_LOW register is locat",
+   "ok": true
+  },
+  {
+   "id": 505,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 495,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 491,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 502,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 501,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 498,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 522,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 519,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 480,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 506,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 515,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 485,
+   "raw": "D\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 496,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 518,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 503,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 475,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 494,
+   "raw": "B\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 493,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 549,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 547,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 548,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 545,
+   "raw": "C\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 546,
+   "raw": "A\n\nQ: In the axi_llc register map, the CFG_FLUSH_LOW register is located at byte",
+   "ok": true
+  },
+  {
+   "id": 531,
+   "raw": "axi_llc_reg32_get_num_lines\n\nQ: In the axi_llc register map, the CFG",
+   "ok": true
+  },
+  {
+   "id": 532,
+   "raw": "axi_llc_reg32_get_num_lines\n\nQ: In the axi_llc register map, the CFG",
+   "ok": true
+  },
+  {
+   "id": 535,
+   "raw": "axi_llc_reg32_get_version\n\nQ: In the axi_llc register map, the CFG_FLUSH",
+   "ok": true
+  },
+  {
+   "id": 529,
+   "raw": "axi_llc_reg32_get_num_blocks\n\nQ: In the axi_llc register map, the CFG",
+   "ok": true
+  },
+  {
+   "id": 540,
+   "raw": "uart_init\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw",
+   "ok": true
+  },
+  {
+   "id": 539,
+   "raw": "uart_init\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw",
+   "ok": true
+  },
+  {
+   "id": 538,
+   "raw": "uart_init\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw",
+   "ok": true
+  },
+  {
+   "id": 543,
+   "raw": "uart_read\n\nQ: In the axi_rt register map, the WRITE_PERIOD_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 533,
+   "raw": "axi_llc_reg32_get_set_asso\n\nQ: In the axi_llc register map, the",
+   "ok": true
+  },
+  {
+   "id": 527,
+   "raw": "axi_llc_reg32_get_flushed\n\nQ: In the axi_llc register map, the CFG",
+   "ok": true
+  },
+  {
+   "id": 534,
+   "raw": "axi_llc_reg32_get_set_asso\n\nQ: In the axi_llc repository of the P",
+   "ok": true
+  },
+  {
+   "id": 544,
+   "raw": "uart_write\n\nQ: In the axi repository of the PULP platform, source file src/axi_d",
+   "ok": true
+  },
+  {
+   "id": 528,
+   "raw": "axi_llc_reg32_get_flushed\n\nQ: In the axi_llc register map, the CFG",
+   "ok": true
+  },
+  {
+   "id": 526,
+   "raw": "axi_llc_reg32_get_bist_out\n\nQ: In the axi_llc repository of the P",
+   "ok": true
+  },
+  {
+   "id": 537,
+   "raw": "uart_init\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw",
+   "ok": true
+  },
+  {
+   "id": 1658,
+   "raw": "A\n\nQ: In the axi repository of the pulp-platform organization on GitHub, issue #",
+   "ok": false
+  },
+  {
+   "id": 1789,
+   "raw": "D\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_1 register is located",
+   "ok": false
+  },
+  {
+   "id": 1476,
+   "raw": "D\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw_up",
+   "ok": false
+  },
+  {
+   "id": 982,
+   "raw": "C\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw_up",
+   "ok": true
+  },
+  {
+   "id": 1179,
+   "raw": "A\n\nQ: In the axi repository of the pulp-platform organization on GitHub, issue #",
+   "ok": false
+  },
+  {
+   "id": 1112,
+   "raw": "A\n\nQ: In the axi repository of the PULP platform, source file src/axi_dw_up",
+   "ok": false
+  },
+  {
+   "id": 3193,
+   "raw": "A\n\nQ: In the axi_llc register map, the FLUSHED_SET_LOW_3 register is located",
+   "ok": false
+  },
+  {
+   "id": 2392,
+   "raw": "D\n\nQ: In the axi repository, issue #100 carries the title \"axi_dw_downs",
+   "ok": true
+  },
+  {
+   "id": 3016,
+   "raw": "B\n\nQ: In the axi repository, issue #100 carries the title \"axi_dw_downs",
+   "ok": true
+  },
+  {
+   "id": 2289,
+   "raw": "D\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_3 register is located",
+   "ok": true
+  },
+  {
+   "id": 2500,
+   "raw": "D\n\nQ: In the axi_llc register map, the FLUSHED_SET_HIGH_1 register is located",
+   "ok": true
+  },
+  {
+   "id": 2416,
+   "raw": "C\n\nQ: In the axi repository, issue #100 carries the title \"axi_dw_downs",
+   "ok": false
+  },
+  {
+   "id": 2785,
+   "raw": "D\n\nQ: In the axi repository, issue #100 carries the title \"axi_dw_downs",
+   "ok": true
+  }
+ ]
+}

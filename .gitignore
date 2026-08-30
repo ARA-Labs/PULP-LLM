@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+dapt_corpus/
+pulp/
+pulp_org/
+carfield/
+!third_party/carfield
+logs/
+*.log

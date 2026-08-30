@@ -1,0 +1,410 @@
+{
+ "summary": {
+  "tag": "dapt3_v2cont",
+  "model": "/vol/models/dapt3",
+  "n": 78,
+  "acc": 0.7692307692307693,
+  "by_type": {
+   "T1": "15/21",
+   "T2": "3/3",
+   "T1h": "10/21",
+   "T7h": "9/9",
+   "T3": "13/14",
+   "T4": "8/8",
+   "T5": "1/1",
+   "T9": "1/1"
+  }
+ },
+ "rows": [
+  {
+   "id": 13,
+   "raw": "0xc4\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 19,
+   "raw": "0x60\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 20,
+   "raw": "0xc8\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 3,
+   "raw": "0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posit",
+   "ok": false
+  },
+  {
+   "id": 22,
+   "raw": "0xa8\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 8,
+   "raw": "0x94\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 0,
+   "raw": "72\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 11,
+   "raw": "8\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posit",
+   "ok": true
+  },
+  {
+   "id": 4,
+   "raw": "44\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": true
+  },
+  {
+   "id": 7,
+   "raw": "0xd8\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 1,
+   "raw": "64\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": true
+  },
+  {
+   "id": 2,
+   "raw": "0x40\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 12,
+   "raw": "76\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 9,
+   "raw": "0xc\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": true
+  },
+  {
+   "id": 10,
+   "raw": "0x58\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 15,
+   "raw": "40\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": true
+  },
+  {
+   "id": 5,
+   "raw": "24\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 6,
+   "raw": "32\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 18,
+   "raw": "0x2c\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 16,
+   "raw": "84\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 21,
+   "raw": "0x24\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 25,
+   "raw": "0x0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 24,
+   "raw": "0x0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 26,
+   "raw": "0x0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": true
+  },
+  {
+   "id": 218,
+   "raw": "48\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 370,
+   "raw": "104\n\nQ: In the axi_rt register map, the WRITE_PERIOD_LEFT_10 register is",
+   "ok": false
+  },
+  {
+   "id": 165,
+   "raw": "0x1e0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based",
+   "ok": true
+  },
+  {
+   "id": 233,
+   "raw": "152\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which",
+   "ok": false
+  },
+  {
+   "id": 139,
+   "raw": "0x18\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what",
+   "ok": true
+  },
+  {
+   "id": 304,
+   "raw": "0x3c\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what",
+   "ok": true
+  },
+  {
+   "id": 141,
+   "raw": "0x294\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich),",
+   "ok": true
+  },
+  {
+   "id": 348,
+   "raw": "112\n\nQ: In the axi_rt register map, the WRITE_PERIOD_LEFT_10 register is",
+   "ok": false
+  },
+  {
+   "id": 276,
+   "raw": "0x14\n\nQ: In the Carfield SoC, which module does the instance i_sync_adv_timer",
+   "ok": true
+  },
+  {
+   "id": 224,
+   "raw": "152\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what is",
+   "ok": false
+  },
+  {
+   "id": 248,
+   "raw": "152\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what is",
+   "ok": false
+  },
+  {
+   "id": 322,
+   "raw": "84\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 359,
+   "raw": "72\n\nQ: In the axi_rt register map, the WRITE_PERIOD_LEFT_10 register is located",
+   "ok": false
+  },
+  {
+   "id": 373,
+   "raw": "0x5c\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what",
+   "ok": false
+  },
+  {
+   "id": 301,
+   "raw": "0x9c\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what",
+   "ok": true
+  },
+  {
+   "id": 386,
+   "raw": "0x10\n\nQ: In the PULP Carfield/Cheshire platform (ETH Zurich), what",
+   "ok": true
+  },
+  {
+   "id": 187,
+   "raw": "0x260\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based",
+   "ok": true
+  },
+  {
+   "id": 346,
+   "raw": "112\n\nQ: In the axi_rt register map, the WRITE_PERIOD_LEFT_10 register is",
+   "ok": false
+  },
+  {
+   "id": 160,
+   "raw": "0x1d4\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based",
+   "ok": true
+  },
+  {
+   "id": 90,
+   "raw": "24\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": false
+  },
+  {
+   "id": 147,
+   "raw": "0x28c\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based",
+   "ok": true
+  },
+  {
+   "id": 416,
+   "raw": "0x3001000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 415,
+   "raw": "0x3000000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 411,
+   "raw": "0x2000000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 414,
+   "raw": "0x20c0000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 412,
+   "raw": "0x2040000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 410,
+   "raw": "0x80400000\n\nQ: In the PULP Carfield SoC memory",
+   "ok": true
+  },
+  {
+   "id": 417,
+   "raw": "0x20000000\n\nQ: In the PULP Carfield SoC memory",
+   "ok": true
+  },
+  {
+   "id": 418,
+   "raw": "0x40000000\n\nQ: In the PULP Carfield SoC memory",
+   "ok": true
+  },
+  {
+   "id": 413,
+   "raw": "0x2080000\n\nQ: In the PULP Carfield SoC memory map",
+   "ok": true
+  },
+  {
+   "id": 40,
+   "raw": "15:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 46,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 47,
+   "raw": "15:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 49,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 42,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 38,
+   "raw": "15:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 32,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 44,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 50,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 31,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 39,
+   "raw": "15:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 35,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 30,
+   "raw": "31:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": true
+  },
+  {
+   "id": 36,
+   "raw": "15:0\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based),",
+   "ok": false
+  },
+  {
+   "id": 56,
+   "raw": "rw\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 62,
+   "raw": "ro\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 70,
+   "raw": "ro\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 63,
+   "raw": "rw\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 71,
+   "raw": "ro\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 74,
+   "raw": "ro\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 72,
+   "raw": "rw\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 66,
+   "raw": "rw\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posi",
+   "ok": true
+  },
+  {
+   "id": 75,
+   "raw": "2\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit posit",
+   "ok": true
+  },
+  {
+   "id": 76,
+   "raw": "10\n\nQ: In the PULP/ETH Zurich Carfield platform (Cheshire-based), which bit",
+   "ok": true
+  }
+ ]
+}

@@ -1,14 +1,13 @@
 # PULP-LLM — Teach an Open Model Everything About Your Chip
 
 [![Model weights](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-open%20model%20weights-ffd21e)](https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT)
-[![Base model](https://img.shields.io/badge/base%20model-Qwen3.5--9B-4c71f0)](https://huggingface.co/Qwen/Qwen3.5-9B-Base)
 [![Benchmark](https://img.shields.io/badge/benchmark-1%2C776%20questions%2C%20machine--checkable-e8710a)](eval/)
-[![Training](https://img.shields.io/badge/training-77%20min%20on%204%C3%97H100-8a2be2)](training/)
+[![Platform](https://img.shields.io/badge/platform-PULP-30a3dc)](https://pulp-platform.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-3da639)](LICENSE)
 
 **A 9B open model that knows a real SoC platform better than Claude Opus 5.** After 77
 GPU-minutes of continued pretraining, it answers closed-book factual questions about the
-[PULP](https://pulp-platform.org/) Carfield/Cheshire chip platform at **81.6% vs Opus 5's
+[PULP](https://pulp-platform.org/) chip platform at **81.6% vs Opus 5's
 72.2%** (base model: 41.2%) on a 1,776-question benchmark — and on pure register-map recall
 it reaches **97% where Opus manages 28%**.
 
@@ -21,7 +20,7 @@ full, reproducible recipe for it: corpus → augmentation → training → bench
 
 - Model weights: **[AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT](https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT)**
 - Base model: [Qwen/Qwen3.5-9B-Base](https://huggingface.co/Qwen/Qwen3.5-9B-Base)
-- Evaluated platform: [pulp-platform/carfield](https://github.com/pulp-platform/carfield), pinned as a submodule under `third_party/`
+- Evaluated platform: the open [PULP platform](https://pulp-platform.org/) ([github.com/pulp-platform](https://github.com/pulp-platform))
 
 ---
 
@@ -100,7 +99,7 @@ Design rules, in the order they matter:
 
 ## 4. Training recipe
 
-`training/modal_dapt.py` (runs on [Modal](https://modal.com); adaptable to any 4-GPU node)
+`training/` — `train_dapt.sh` + `ds_zero3.json` + `evaluate.py`; runs on any 4-GPU node (we used 4×H100)
 
 | Item | Value |
 |---|---|
@@ -171,9 +170,9 @@ catastrophic-forgetting audit (e.g. MMLU) has been run yet. Per-model result fil
 ## 7. Reproduce
 
 ```bash
-git clone --recursive https://github.com/ARA-Labs/PULP-LLM
+git clone https://github.com/ARA-Labs/PULP-LLM
 cd PULP-LLM
-ln -s third_party/carfield carfield   # question/augmentation generators read carfield/ at the repo root
+git clone https://github.com/pulp-platform/carfield   # generators read carfield/ at the repo root
 
 # 1) corpus (needs gh CLI for issues)
 python data/crawl_pulp.py clone && python data/crawl_pulp.py issues --top 60 && python data/crawl_pulp.py corpus
@@ -183,25 +182,22 @@ python data/gen_pulp_v3.py --eval-n 130
 python data/gen_templates.py                      # one claude -p call per fact type
 python data/gen_aug_v3.py                         # -> dapt_corpus/aug3.jsonl
 
-# 3) train on Modal (4xH100, ~77 min)
-modal volume put pulp-dapt dapt_corpus/pulp_hw.jsonl /data/pulp_corpus.jsonl
-modal volume put pulp-dapt dapt_corpus/aug3.jsonl  /data/aug3.jsonl
-modal run training/modal_dapt.py::prepare
-TRAIN_GPU=H100:4 modal run --detach training/modal_dapt.py::train --run-name dapt3 --epochs 2 --datasets pulp,replay,aug3 --zero 3 --pdbs 2
+# 3) train (any 4-GPU node, ~77 min on 4xH100)
+mkdir -p data && cp dapt_corpus/pulp_hw.jsonl data/pulp_corpus.jsonl && cp dapt_corpus/aug3.jsonl data/
+python training/prepare_replay.py --corpus data/pulp_corpus.jsonl --out data/replay.jsonl
+DATA_DIR=data OUT=out/dapt3 bash training/train_dapt.sh   # writes dataset_info.json per header comment
 
 # 4) evaluate
-modal run training/modal_dapt.py::evaluate --model /vol/models/dapt3 --tag dapt3 \
-  --questions-b64 "$(base64 -w0 eval/eval_pulp_v3.jsonl)" --fewshot-b64 "$(base64 -w0 eval/fewshot_pulp_v3.jsonl)"
+python training/evaluate.py --model out/dapt3 \
+  --questions eval/eval_pulp_v3.jsonl --fewshot eval/fewshot_pulp_v3.jsonl --out results.json
 ```
 
 ## 8. Repo layout
 
 ```
 data/       corpus crawler, fact extraction, LLM template generation, augmentation builder
-training/   Modal app: continued-pretraining run + vLLM closed-book evaluation
+training/   continued-pretraining launcher (train_dapt.sh), DeepSpeed config, vLLM evaluation
 eval/       question bank (full + audit subset), scorer, per-model results
-third_party/carfield   git submodule -> pulp-platform/carfield, pinned at the exact commit
-            all benchmark questions and augmentation facts were extracted from
 ```
 
 Note on scope: the *training corpus* is the whole `pulp-platform` org (259 repos), crawled

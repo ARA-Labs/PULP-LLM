@@ -1,18 +1,18 @@
-# PULP-LLM — Teach an Open Model Everything About Your Chip
+# PULP-LLM: Teach an Open Model Everything About Your Chip
 
 [![Model weights](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-open%20model%20weights-ffd21e)](https://huggingface.co/AgentNativeResearchLab/Qwen3.5-9B-PULP-DAPT)
-[![Benchmark](https://img.shields.io/badge/benchmark-1%2C776%20questions%2C%20machine--checkable-e8710a)](eval/)
+[![Report](https://img.shields.io/badge/report-technical%20PDF-b31b1b)](paper/main.pdf)
+[![Benchmark](https://img.shields.io/badge/benchmark-1%2C776%20questions-e8710a)](eval/)
 [![Platform](https://img.shields.io/badge/platform-PULP-30a3dc)](https://pulp-platform.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-3da639)](LICENSE)
 
-**A 9B open model that knows a real SoC platform better than Claude Opus 5.** After 77
-GPU-minutes of continued pretraining, it answers closed-book factual questions about the
-[PULP](https://pulp-platform.org/) chip platform at **81.6% vs Opus 5's
-72.2%** (base model: 41.2%) on a 1,776-question benchmark — and on pure register-map recall
-it reaches **97% where Opus manages 28%**.
+**A 9B open model that knows a real SoC platform better than Claude Opus 5.** It answers
+closed-book factual questions about the [PULP](https://pulp-platform.org/) chip platform at
+**81.6% vs Opus 5's 72.2%** (base model: 41.2%) on a 1,776-question benchmark, and on pure
+register-map recall it reaches **97% where Opus manages 28%**.
 
-The score is not the point — the *recipe* is. Continued pretraining on the raw corpus alone
-injects **zero** retrievable knowledge (the loss drops; recall doesn't move). Every point of
+The result comes from the *recipe*. Continued pretraining on the raw corpus alone injects
+**zero** retrievable knowledge (the loss drops; recall stays flat). Every point of
 improvement comes from a **knowledge-rewriting augmentation** stage, and this repo is the
 full, reproducible recipe for it: corpus → augmentation → training → benchmark, end to end.
 
@@ -26,7 +26,7 @@ full, reproducible recipe for it: corpus → augmentation → training → bench
 
 ## 1. The problem
 
-**The pain point.** Chip companies want an LLM that *knows their chip* — its register map,
+**The pain point.** Chip companies want an LLM that *knows their chip*: its register map,
 memory map, build system, drivers, and issue history. None of that is in any pretraining
 corpus, and much of it (a register offset, a dependency pin) is exactly the kind of arbitrary
 fact LLMs are worst at absorbing. This is the [ChipNeMo](https://arxiv.org/abs/2311.00176)
@@ -40,45 +40,45 @@ partially, while a base 9B model knows almost nothing (near guess level on regis
 That gap is the experiment: it lets one measurement separate "the model reasons well" from
 "the model actually knows this chip".
 
-**The ability under test.** Closed-book factual recall — no retrieval, no context, 3-shot
+**The ability under test.** Closed-book factual recall: no retrieval, no context, 3-shot
 answer-format priming only. Can a small open model, cheaply adapted, *know* a specific
 hardware platform better than the frontier model a chip team would otherwise use?
 
 ## 2. Contributions
 
 1. **A knowledge-rewriting augmentation recipe that actually injects facts.** Raw-corpus
-   continued pretraining teaches the corpus *distribution*, not extractable facts; restating
-   every fact in many diverse surface forms is what makes it retrievable. The recipe's design
-   rules (§3) are the core of this repo.
+   continued pretraining leaves every fact unextractable; restating each fact in many
+   diverse surface forms is what makes it retrievable. The recipe's design rules (§3) are
+   the core of this repo.
 2. **Open weights that beat a frontier model on the target domain.** A 9B model at 81.6% vs
-   Claude Opus 5 at 72.2% closed-book, trained in 77 minutes on 4×H100.
-3. **A 1,776-question auto-generated benchmark** for chip-platform knowledge — layered by
+   Claude Opus 5 at 72.2% closed-book.
+3. **A 1,776-question auto-generated benchmark** for chip-platform knowledge, layered by
    the kind of knowledge an engineer needs, fully machine-checkable, with an
-   anti-lexical-leak filter on every multiple-choice question — plus the pipeline to rebuild
+   anti-lexical-leak filter on every multiple-choice question, plus the pipeline to rebuild
    it for any other platform.
 
 ## 3. Training data recipe
 
 The data pipeline has two products: a *corpus* (what the domain looks like) and an
 *augmentation set* (what the model must memorize). The recipe's central lesson: **the corpus
-carries the distribution, the augmentation carries the facts** — skip the augmentation and
-recall does not move.
+carries the distribution, the augmentation carries the facts**. Skip the augmentation and
+recall stays flat.
 
-### 3.1 Corpus — 31.2M tokens (`data/crawl_pulp.py`)
+### 3.1 Corpus: 31.2M tokens (`data/crawl_pulp.py`)
 
 1. Clone all 259 non-fork repos of the `pulp-platform` GitHub org + issues/PRs of the top 60.
-2. Filter aggressively: drop toolchain forks (binutils/glibc/newlib — 168M chars of noise),
+2. Filter aggressively: drop toolchain forks (binutils/glibc/newlib, 168M chars of noise),
    NN example repos, `tests/golden/vectors` payloads; dedupe by content hash.
 3. Keep RTL (`.sv/.v`), register definitions (`.hjson`), docs (`.md/.rst`), C
    drivers/headers, build manifests (`Bender.yml`), issue threads → JSONL, one
    `{"text": ...}` doc per file.
 
-### 3.2 Knowledge-rewriting augmentation — 3.49M tokens ≈ 10% of corpus (`data/gen_templates.py` + `data/gen_aug_v3.py`)
+### 3.2 Knowledge-rewriting augmentation: 3.49M tokens ≈ 10% of corpus (`data/gen_templates.py` + `data/gen_aug_v3.py`)
 
 Design rules, in the order they matter:
 
 1. **Enumerate *every* fact, not just the ones you plan to quiz.** Augmentation coverage
-   determines the extractable scope — the model gains only on facts the augmentation
+   determines the extractable scope: the model gains only on facts the augmentation
    covered, so treat the benchmark as a sampled audit of full coverage. Facts come from
    structured sources: all ~340 register offsets from generated C headers, all hjson fields
    (bits/swaccess/desc), both memory maps, Bender dependency pins, RTL instantiations,
@@ -87,29 +87,28 @@ Design rules, in the order they matter:
    repeats far outperforms a handful of hand templates repeated more often: datasheet prose,
    table rows, C comments, forum answers, quiz Q/A, changelogs. One LLM call per fact type
    writes the templates; placeholders are validated programmatically.
-3. **≥1/3 reversed forms** ("At offset 0x14 sits CTRL") — otherwise the reversal curse makes
+3. **≥1/3 reversed forms** ("At offset 0x14 sits CTRL"); otherwise the reversal curse makes
    facts one-directional.
-4. **Whole-table narrative documents** — the full register map as prose/table/header in
-   several traversal orders — so hundreds of near-identical facts serve as each other's
-   context instead of interfering. Similar-fact interference, not exposure count, is the
-   memorization bottleneck.
+4. **Whole-table narrative documents** (the full register map as prose/table/header in
+   several traversal orders) so hundreds of near-identical facts serve as each other's
+   context instead of interfering. Similar-fact interference is the memorization
+   bottleneck; adding repeats does not fix it.
 5. Pack 12 statements per document; never emit exact benchmark phrasings.
 6. **Mix** `corpus : augmentation : wikitext replay ≈ 31.2M : 3.49M : 2.5M` (replay ≈ 8%,
    ChipNeMo-style, against catastrophic forgetting).
 
 ## 4. Training recipe
 
-`training/` — `train_dapt.sh` + `ds_zero3.json` + `evaluate.py`; runs on any 4-GPU node (we used 4×H100)
+`training/` contains `train_dapt.sh`, `ds_zero3.json`, and `evaluate.py`; runs on any 4-GPU node.
 
 | Item | Value |
 |---|---|
-| Base model | Qwen/Qwen3.5-9B-Base (base, **not** instruct — ChipNeMo rule) |
+| Base model | Qwen/Qwen3.5-9B-Base (a base checkpoint, following the ChipNeMo rule) |
 | Method | Continued pretraining (`stage=pt`), **full-parameter**, bf16 |
 | Framework | LLaMA-Factory 0.9.5 + DeepSpeed ZeRO-3 + transformers 5.6 |
 | LR | 5e-6, cosine, warmup 1% (ChipNeMo-scale small LR) |
 | Batch | global 16 = 4 GPUs × micro-batch 2 × grad-accum 2, packing at cutoff 4096 |
 | Epochs | 2 |
-| Hardware | 4×H100-80GB, **77 minutes** |
 
 Performance notes that mattered (2.2× total speedup, measured):
 - `flash-linear-attention` is **required** for Qwen3.5's gated-delta-net layers (25 → 7.4 s/it).
@@ -119,7 +118,7 @@ Performance notes that mattered (2.2× total speedup, measured):
 
 ## 5. Evaluation
 
-`eval/` — all questions are auto-generated from authoritative sources and machine-checkable
+`eval/` holds the benchmark. All questions are auto-generated from authoritative sources and machine-checkable
 (exact match after normalization, or 4-way MC with auto-generated distractors; zero human or
 LLM judging). The benchmark is **layered by the kind of knowledge an engineer actually
 needs**:
@@ -134,7 +133,7 @@ needs**:
 
 Question-design rules that proved necessary: every MC question passes an anti-lexical-leak
 filter (a question is kept only if every distractor's lexical overlap with the question is ≥
-the answer's — otherwise strong models solve it by word matching without any knowledge), and
+the answer's; otherwise strong models solve it by word matching without any knowledge), and
 the few-shot exemplars cover every answer format (a shot set without a hex example silently
 depresses offset scores).
 
@@ -145,9 +144,8 @@ each answer format), `score_v3.py` (scorer). Protocol: 3-shot completion, greedy
 
 ## 6. Results
 
-**Full bank — all 1,776 auto-generated questions, closed-book.** Only 125 of these were ever
-inspected during development; the other 1,651 are effectively held out, so the numbers below
-are not tuned-on-test:
+**Full bank: all 1,776 auto-generated questions, closed-book.** Only 125 of these were ever
+inspected during development; the other 1,651 are effectively held out:
 
 | Model | Total | L1 facts (419) | L2 struct (53) | L3 behav (53) | L4 cross (25) | L5 eng (1,226) |
 |---|---|---|---|---|---|---|
@@ -157,14 +155,14 @@ are not tuned-on-test:
 
 The layer profiles are complementary: Opus wins where semantic association helps (issue→repo,
 region ownership) but collapses on pure memorization (register offsets: 28%); the adapted
-model is the mirror image — which is exactly the knowledge a RAG-free internal assistant
-needs to have in weights.
+model is the mirror image, and that mirror image is exactly the knowledge a RAG-free
+internal assistant needs to have in weights.
 
-Known limits (stated, not hidden): L3 multiple-choice is largely solvable by semantic
-name-matching for strong models (all models >90%) — it does not differentiate; the adapted
-model's remaining weakness is numeric range-membership reasoning (L2 region ownership) —
-range queries need reasoning over the memory map, not fact recall; no
-catastrophic-forgetting audit (e.g. MMLU) has been run yet. Per-model result files:
+Known limits, stated plainly: L3 multiple-choice is largely solvable by semantic
+name-matching for strong models (all models >90%), so it fails to differentiate; the
+adapted model's remaining weakness is numeric range-membership reasoning (L2 region
+ownership), where range queries need reasoning over the memory map rather than fact
+recall; no catastrophic-forgetting audit (e.g. MMLU) has been run yet. Per-model result files:
 `eval/results/*_fullbank1776.json` (and `*_subset125.json`).
 
 ## 7. Reproduce
@@ -182,7 +180,7 @@ python data/gen_pulp_v3.py --eval-n 130
 python data/gen_templates.py                      # one claude -p call per fact type
 python data/gen_aug_v3.py                         # -> dapt_corpus/aug3.jsonl
 
-# 3) train (any 4-GPU node, ~77 min on 4xH100)
+# 3) train (any 4-GPU node)
 mkdir -p data && cp dapt_corpus/pulp_hw.jsonl data/pulp_corpus.jsonl && cp dapt_corpus/aug3.jsonl data/
 python training/prepare_replay.py --corpus data/pulp_corpus.jsonl --out data/replay.jsonl
 DATA_DIR=data OUT=out/dapt3 bash training/train_dapt.sh   # writes dataset_info.json per header comment
@@ -201,14 +199,13 @@ eval/       question bank (full + audit subset), scorer, per-model results
 ```
 
 Note on scope: the *training corpus* is the whole `pulp-platform` org (259 repos), crawled
-at run time by `data/crawl_pulp.py` — far too large to vendor. The submodule pins only
-`carfield`, the single source tree that the benchmark and the augmentation facts are
-generated from, so the ground truth is reproducible at an exact commit.
+at run time by `data/crawl_pulp.py`; it is far too large to vendor. The benchmark and the
+augmentation facts are generated from the `carfield` source tree, cloned in step 0 above.
 
 ## Acknowledgements & license
 
 Built on the open hardware of the [PULP platform](https://pulp-platform.org/) (ETH Zürich &
-University of Bologna; SolderPad/Apache licenses) — referenced as a submodule, not copied.
+University of Bologna; SolderPad/Apache licenses), which we reference rather than copy.
 Base model by Qwen. Recipe inspiration: NVIDIA ChipNeMo; extraction theory: Allen-Zhu & Li,
 *Physics of Language Models 3.1*.
 
